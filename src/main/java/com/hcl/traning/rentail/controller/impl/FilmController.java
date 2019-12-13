@@ -1,44 +1,43 @@
-package com.hcl.traning.rentail.controller;
+package com.hcl.traning.rentail.controller.impl;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hcl.traning.rentail.controller.IFilmController;
 import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.service.IFilmService;
 
 
 @RestController
-@RequestMapping("/api/films")
-public class FilmCotroller {
+public class FilmController implements IFilmController {
+	
 	
 	@Autowired
 	IFilmService service;
 	
-	@RequestMapping(value = "", method = RequestMethod.POST)
+	@Override	
 	public Film postData(@RequestBody Film film) {
 		
 		service.add(film);		
 		return film;
 	}
 	
-	@RequestMapping(value = "", method = RequestMethod.GET)
+	@Override	
 	public List<Film> getData() {		
 		
 		return service.listAll();
 	}
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@Override	
 	public Film getById(@PathVariable("id") Long id){
 		return service.getById(id);
 	}
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	@Override	
 	public Film deleteById(@PathVariable("id") Long id){
 		return service.delete(id);
 	}
