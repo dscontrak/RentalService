@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.hcl.traning.rentail.model.Customer;
 
-public interface ICustmerDao {
+public interface ICustomerDao {
 
 	void save(Customer customer);
 

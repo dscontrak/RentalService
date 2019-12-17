@@ -9,13 +9,13 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hcl.traning.rentail.dao.ICustmerDao;
+import com.hcl.traning.rentail.dao.ICustomerDao;
 import com.hcl.traning.rentail.model.Customer;
 
 
 @Transactional
 @Repository
-public class CustomerDao implements ICustmerDao {
+public class CustomerDao implements ICustomerDao {
 	
 	@PersistenceContext
 	private EntityManager em;

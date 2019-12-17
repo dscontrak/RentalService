@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hcl.traning.rentail.dao.ICustmerDao;
+import com.hcl.traning.rentail.dao.ICustomerDao;
 import com.hcl.traning.rentail.model.Customer;
 import com.hcl.traning.rentail.service.ICustomerService;
 
@@ -15,7 +15,7 @@ import com.hcl.traning.rentail.service.ICustomerService;
 public class CustomerService implements ICustomerService {
 	
 	@Autowired
-	private ICustmerDao dao;	
+	private ICustomerDao dao;	
 	
 	@Override
 	public void add(Customer c) {

@@ -43,9 +43,14 @@ public class CalcuatePayment {
 				if (film.getType().equals("N")) {
 					amount += 40.0 * daysLate;
 				} else if (film.getType().equals("R")) {
-					amount += 30.0 * daysLate;
+					if(daysLate > 3) {
+						amount += 30.0 * daysLate;
+					}					
 				} else {
-					amount += 30.0 * daysLate;
+					if(daysLate > 5) {
+						amount += 30.0 * daysLate;
+					}
+					
 				}
 			}
 			

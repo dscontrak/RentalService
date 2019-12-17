@@ -1,7 +1,6 @@
 package com.hcl.traning.rentail.controller.impl;
 
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,51 +25,32 @@ public class RentalController implements IRentalController {
 	RentalFilmService rentalFilmService; 
 	
 	@Override	
-	public Rental postData(@RequestBody Rental rental) {
-		
-		service.add(rental);	
-		service.addPossiblePayments(rental);
-		
-		return rental;
+	public Rental postData(@RequestBody Rental rental) {		
+		return service.add(rental);		
 	}
 	
 	@Override	
-	public List<Rental> getData() {		
-		
+	public List<Rental> getData() {				
 		return service.listAll();
 	}
 	
 	@Override	
-	public Rental getDataRentalByID(@PathVariable("id") Long id) {		
-		
+	public Rental getDataRentalByID(@PathVariable("id") Long id) {				
 		return service.getById(id);
 	}
 	
 	@Override	
-	public Set<RentalFilmsSerialize> getDataRentalFilms(@PathVariable("id") Long id) {		
-		
-		Set<RentalFilmsSerialize> filmsSerializes = new HashSet<RentalFilmsSerialize>();
-		Rental rental = rentalFilmService.findAllByRental(id);
-		
-		rental.getRentalFilms().forEach(rf -> {
-			RentalFilmsSerialize rfSerialize = new RentalFilmsSerialize();
-			rfSerialize.copyFromRentalFilm(rf);
-			
-			filmsSerializes.add(rfSerialize);
-		});
-		
-		return filmsSerializes ;
+	public Set<RentalFilmsSerialize> getDataRentalFilms(@PathVariable("id") Long id) {				
+		return service.getDataRentalFilms(id);
 	}
 	
 	@Override	
-	public Rental postDataPayment(@RequestBody Rental rental) {
-					
+	public Rental postDataPayment(@RequestBody Rental rental) {				
 		return service.addPaymentsToRental(rental);
 	}
 	
 	@Override	
-	public Rental postDataReturn(@RequestBody Rental rental) {
-					
+	public Rental postDataReturn(@RequestBody Rental rental) {					
 		return service.returnRental(rental);
 	}
 	

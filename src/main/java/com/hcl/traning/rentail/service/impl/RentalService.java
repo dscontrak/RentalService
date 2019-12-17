@@ -2,13 +2,14 @@ package com.hcl.traning.rentail.service.impl;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hcl.traning.rentail.dao.ICustmerDao;
+import com.hcl.traning.rentail.dao.ICustomerDao;
 import com.hcl.traning.rentail.dao.IFilmDao;
 import com.hcl.traning.rentail.dao.IRentalDao;
 import com.hcl.traning.rentail.dao.IRentalFilmDao;
@@ -17,6 +18,7 @@ import com.hcl.traning.rentail.model.Customer;
 import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.model.Payment;
 import com.hcl.traning.rentail.model.Rental;
+import com.hcl.traning.rentail.model.RentalFilmsSerialize;
 import com.hcl.traning.rentail.service.IRentalService;
 import com.hcl.traning.rentail.util.CalcuatePayment;
 import com.hcl.traning.rentail.util.CalculateInventory;
@@ -29,7 +31,7 @@ public class RentalService implements IRentalService {
 	IRentalDao daoRental;
 	
 	@Autowired
-	ICustmerDao daoCustomer;
+	ICustomerDao daoCustomer;
 	
 	@Autowired
 	IFilmDao daoFilm;
@@ -52,7 +54,7 @@ public class RentalService implements IRentalService {
 	
 	
 	@Override
-	public void add(Rental rental) {
+	public Rental add(Rental rental) {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());		
 		rental.setCreated(timestamp);				
 		
@@ -78,6 +80,9 @@ public class RentalService implements IRentalService {
 			}
 			
 		});
+		
+		addPossiblePayments(rental);
+		return rental;
 	}	
 	
 	@Override
@@ -187,6 +192,9 @@ public class RentalService implements IRentalService {
 			throw new IllegalArgumentException("The rental has a differnt status to Active");
 		}
 		
+		// Add possible payments to do when return.
+		// addPossiblePayments(rentalRequest);
+		
 		// Update inventory
 		rentalFound.getRentalFilms().forEach(rf -> {
 			int amountReturn = calculateInventory.getAmountToUpdateFilmReturn(rf, rentalRequest.getRentalFilms());
@@ -205,6 +213,20 @@ public class RentalService implements IRentalService {
 		return rentalFound;
 	}
 	
+	
+	public Set<RentalFilmsSerialize> getDataRentalFilms(Long id){
+		Set<RentalFilmsSerialize> filmsSerializes = new HashSet<RentalFilmsSerialize>();
+		Rental rental = daoRentalFilm.findAllByRental(id); // rentalFilmService.findAllByRental(id);
+		
+		rental.getRentalFilms().forEach(rf -> {
+			RentalFilmsSerialize rfSerialize = new RentalFilmsSerialize();
+			rfSerialize.copyFromRentalFilm(rf);
+			
+			filmsSerializes.add(rfSerialize);
+		});
+		
+		return filmsSerializes;
+	}
 	
 
 	/*private Set<Payment> setPaymentFromRequest(Rental rentalRequest, Rental rentalFound) {
