@@ -1,8 +1,10 @@
 package com.hcl.traning.rentail.model;
 
-import java.sql.Timestamp;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hcl.traning.rentail.util.LocalDateTimeConverter;
 
 @Entity
 @Table(name = "customers", 
@@ -26,11 +31,16 @@ public class Customer {
 	private String phoneNumber;
 	private String address;
 	private Integer bonus;
-	private Timestamp created;
-	private Timestamp updated;
+	
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime created;
+	
+	@Convert(converter = LocalDateTimeConverter.class)	
+	private LocalDateTime updated;
 	
 	// Property class the relationship class
 	@OneToMany(mappedBy = "customer",  fetch = FetchType.EAGER)	
+	@JsonBackReference
 	private Set<Rental> rentals;
 	
 	public Long getId() {
@@ -70,18 +80,28 @@ public class Customer {
 	public void setBonus(Integer bonus) {
 		this.bonus = bonus;
 	}
-	public Timestamp getCreated() {
+		
+	public LocalDateTime getCreated() {
 		return created;
 	}
-	public void setCreated(Timestamp created) {
+	public void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
-	public Timestamp getUpdated() {
+		
+	public LocalDateTime getUpdated() {
 		return updated;
 	}
-	public void setUpdated(Timestamp updated) {
+	public void setUpdated(LocalDateTime updated) {
 		this.updated = updated;
 	}
+	
+	public Set<Rental> getRentals() {
+		return rentals;
+	}
+	public void setRentals(Set<Rental> rentals) {
+		this.rentals = rentals;
+	}
+	
 	
 	
 	

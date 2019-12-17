@@ -1,10 +1,11 @@
 package com.hcl.traning.rentail.model;
 
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hcl.traning.rentail.util.LocalDateTimeConverter;
 
 
 @Entity
@@ -48,7 +50,8 @@ public class Rental {
 	
 	private String status;
 	//private Date returnDate;
-	private Timestamp created;
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime created;
 	
 	public Long getId() {
 		return id;
@@ -82,12 +85,7 @@ public class Rental {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Timestamp getCreated() {
-		return created;
-	}
-	public void setCreated(Timestamp created) {
-		this.created = created;
-	}
+	
 	public Set<RentalFilms> getRentalFilms() {
 		return rentalFilms;
 	}
@@ -105,6 +103,12 @@ public class Rental {
 	}
 	public void setPossiblePayments(Set<Payment> possiblePayments) {
 		this.possiblePayments = possiblePayments;
+	}
+	public LocalDateTime getCreated() {
+		return created;
+	}
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}			
 		
 	

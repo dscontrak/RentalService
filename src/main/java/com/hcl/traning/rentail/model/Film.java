@@ -1,9 +1,11 @@
 package com.hcl.traning.rentail.model;
 
-import java.sql.Timestamp;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,7 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hcl.traning.rentail.util.LocalDateTimeConverter;
 
 @Entity
 @Table(name = "films")
@@ -24,11 +29,16 @@ public class Film {
 	
 	@Column(unique = true)
 	private String title;
-	private String type;
-	private Timestamp created;
-	private Timestamp updated;
+	private String type;	
 	private Integer inventoryStore;
 	private Integer inventoryRent;
+		
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime created;
+	
+	
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime updated;
 	
 	@JsonManagedReference(value ="film-rental")
 	//@JsonBackReference(value ="film-rental")
@@ -53,18 +63,6 @@ public class Film {
 	}
 	public void setType(String type) {
 		this.type = type;
-	}
-	public Timestamp getCreated() {
-		return created;
-	}
-	public void setCreated(Timestamp created) {
-		this.created = created;
-	}
-	public Timestamp getUpdated() {
-		return updated;
-	}
-	public void setUpdated(Timestamp updated) {
-		this.updated = updated;
 	}	
 	
 	public Integer getInventoryStore() {
@@ -85,6 +83,23 @@ public class Film {
 	public void setRentalFilms(Set<RentalFilms> rentalFilms) {
 		this.rentalFilms = rentalFilms;
 	}
+	
+	public LocalDateTime getCreated() {
+		return created;
+	}
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
+	}
+	
+	
+	public LocalDateTime getUpdated() {
+		return updated;
+	}
+	public void setUpdated(LocalDateTime updated) {
+		this.updated = updated;
+	}
+	
+	
 
 	
 }

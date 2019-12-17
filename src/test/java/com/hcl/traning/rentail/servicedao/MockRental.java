@@ -15,10 +15,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import com.hcl.traning.rentail.dao.impl.CustomerDao;
-import com.hcl.traning.rentail.dao.impl.FilmDao;
-import com.hcl.traning.rentail.dao.impl.RentalDao;
-import com.hcl.traning.rentail.dao.impl.RentalFilmDao;
+import com.hcl.traning.rentail.dao.CustomerRepository;
+import com.hcl.traning.rentail.dao.FilmRepository;
+import com.hcl.traning.rentail.dao.RentalFilmRepository;
+import com.hcl.traning.rentail.dao.RentalRepository;
+
 import com.hcl.traning.rentail.model.Customer;
 import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.model.Rental;
@@ -34,16 +35,16 @@ public class MockRental {
 	RentalService rentalService;
 		
 	@Mock
-	RentalDao rentalDao;
+	RentalRepository rentalDao;
 	
 	@Mock
-	RentalFilmDao daoRentalFilm;
+	RentalFilmRepository daoRentalFilm;
 	
 	@Mock
-	FilmDao daoFilm;
+	FilmRepository daoFilm;
 	
 	@Mock
-	CustomerDao daoCustomer;
+	CustomerRepository daoCustomer;
 	
 	@Spy 
 	CalcuatePayment calcuatePayment;	
@@ -85,14 +86,14 @@ public class MockRental {
 		rental.setCustomer(customer);
 		rental.setRentalFilms(rentalFilms);
 		
-		when(daoCustomer.getById(1l)).thenReturn(customer);
-		when(daoFilm.getById(1l)).thenReturn(film);
+		when(daoCustomer.findOne(1l)).thenReturn(customer);
+		when(daoFilm.findOne(1l)).thenReturn(film);
 		
 		rentalService.add(rental);
 		
 		verify(rentalDao, times(1)).save(rental);
-		verify(daoCustomer, times(1)).getById(1l);
-		verify(daoFilm, times(1)).getById(1l);
+		verify(daoCustomer, times(1)).findOne(1l);
+		verify(daoFilm, times(1)).findOne(1l);
 				
 		
 	}
@@ -123,12 +124,12 @@ public class MockRental {
 		rental.setCustomer(customer);		
 		rental.setRentalFilms(rentalFilms);
 		
-		when(rentalDao.getById(ID)).thenReturn(rental);
+		when(rentalDao.findOne(ID)).thenReturn(rental);
 		
 		Rental rentalFound = rentalService.getById(ID);
 		assertEquals(rentalFound.getId(), ID);
 		assertEquals(rentalFound.getPossiblePayments().size(), 1);
-		verify(rentalDao, times(1)).getById(ID);
+		verify(rentalDao, times(1)).findOne(ID);
 		
 		
 	}

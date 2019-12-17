@@ -8,13 +8,14 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.hcl.traning.rentail.dao.impl.FilmDao;
+import com.hcl.traning.rentail.dao.FilmRepository;
 import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.service.impl.FilmService;
 
@@ -25,7 +26,7 @@ public class MockFilm {
 	FilmService filmService;
 		
 	@Mock
-	FilmDao filmDao;
+	FilmRepository filmDao;
 		
 	
 	final Long ID = 60l;
@@ -43,14 +44,14 @@ public class MockFilm {
 		film.setId(ID);
 		film.setTitle("Title");
 		
-		when(filmDao.getById(ID)).thenReturn(film);
-		
+					
+		when(filmDao.findOne(ID)).thenReturn(film);		
 		Film filmFound = filmService.getById(ID);
 		
 		assertEquals(filmFound.getId(), ID);
 		assertEquals(filmFound.getTitle(), "Title");
 		
-		verify(filmDao, times(1)).getById(ID);
+		verify(filmDao, times(1)).findOne(ID);
 		
 	}
 	
@@ -80,7 +81,8 @@ public class MockFilm {
 		film.setId(ID);
 		film.setTitle("Title");
 		
-		when(filmDao.getById(ID)).thenReturn(film);
+				
+		when(filmDao.findOne(ID)).thenReturn(film);
 		
 		filmService.delete(film.getId());					
 		verify(filmDao, times(1)).delete(film);

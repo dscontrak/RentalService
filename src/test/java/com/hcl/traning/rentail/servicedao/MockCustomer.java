@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.hcl.traning.rentail.dao.impl.CustomerDao;
+import com.hcl.traning.rentail.dao.CustomerRepository;
 import com.hcl.traning.rentail.model.Customer;
 import com.hcl.traning.rentail.service.impl.CustomerService;
 
@@ -25,7 +25,7 @@ public class MockCustomer {
 	CustomerService customerService;
 		
 	@Mock
-	CustomerDao customerDao;
+	CustomerRepository customerDao;
 				
 	@Before 
 	public void init()
@@ -38,15 +38,17 @@ public class MockCustomer {
 		
 		final Long ID = 1l;
 		
+		// Internal
 		Customer customer = new Customer();
 		customer.setId(ID);
 		customer.setName("Daniel");
 		customer.setLastName("Serna");
 		
-		when(customerDao.getById(ID)).thenReturn(customer);
 		
-		Customer customerFound = customerService.getById(ID);
+		when(customerDao.findOne(ID)).thenReturn(customer);
 		
+		// Test
+		Customer customerFound = customerService.getById(ID);		
 		assertEquals(ID, customerFound.getId());
 		assertEquals("Daniel", customerFound.getName());
 		assertEquals("Serna", customerFound.getLastName());
@@ -98,7 +100,8 @@ public class MockCustomer {
 		customer.setName("Daniel");
 		customer.setLastName("Serna");
 		
-		when(customerDao.getById(ID)).thenReturn(customer);
+		
+		when(customerDao.findOne(ID)).thenReturn(customer);			
 		
 		customerService.delete(customer.getId());		
 		

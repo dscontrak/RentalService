@@ -1,6 +1,6 @@
 package com.hcl.traning.rentail.service.impl;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -9,11 +9,11 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hcl.traning.rentail.dao.ICustomerDao;
-import com.hcl.traning.rentail.dao.IFilmDao;
-import com.hcl.traning.rentail.dao.IRentalDao;
-import com.hcl.traning.rentail.dao.IRentalFilmDao;
-import com.hcl.traning.rentail.dao.impl.PaymentDao;
+import com.hcl.traning.rentail.dao.CustomerRepository;
+import com.hcl.traning.rentail.dao.FilmRepository;
+import com.hcl.traning.rentail.dao.PaymentRepository;
+import com.hcl.traning.rentail.dao.RentalFilmRepository;
+import com.hcl.traning.rentail.dao.RentalRepository;
 import com.hcl.traning.rentail.model.Customer;
 import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.model.Payment;
@@ -28,19 +28,19 @@ import com.hcl.traning.rentail.util.CodeGenerator;
 public class RentalService implements IRentalService {
 	
 	@Autowired
-	IRentalDao daoRental;
+	RentalRepository daoRental;
 	
 	@Autowired
-	ICustomerDao daoCustomer;
+	CustomerRepository daoCustomer;
 	
 	@Autowired
-	IFilmDao daoFilm;
+	FilmRepository daoFilm;
 	
 	@Autowired
-	IRentalFilmDao daoRentalFilm;
+	RentalFilmRepository daoRentalFilm;
 	
 	@Autowired
-	PaymentDao daoPayment;
+	PaymentRepository daoPayment;
 	
 	@Autowired
 	CodeGenerator codeGenerator;
@@ -55,21 +55,20 @@ public class RentalService implements IRentalService {
 	
 	@Override
 	public Rental add(Rental rental) {
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());		
+		LocalDateTime timestamp = LocalDateTime.now();	
 		rental.setCreated(timestamp);				
 		
-		Customer customer = daoCustomer.getById(rental.getCustomer().getId());
+		Customer customer = daoCustomer.findOne(rental.getCustomer().getId()) ;
 		rental.setCustomer(customer);
 		rental.setCode(codeGenerator.generate());
 		
 		// Set initial status Queue
-		rental.setStatus("Q");
-		
+		rental.setStatus("Q");		
 		daoRental.save(rental);
 		
 		// read all rental and film 
 		rental.getRentalFilms().forEach(currRentalFilm -> {
-			Film foundFilm = daoFilm.getById(currRentalFilm.getFilm().getId());
+			Film foundFilm = daoFilm.findOne(currRentalFilm.getFilm().getId());
 			
 			if(foundFilm != null) {
 				currRentalFilm.setFilm(foundFilm);
@@ -87,7 +86,7 @@ public class RentalService implements IRentalService {
 	
 	@Override
 	public void addAll(Collection<Rental> rentals) {
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime timestamp = LocalDateTime.now();
 		
 		rentals.forEach(c -> {			
 			c.setCreated(timestamp);
@@ -106,7 +105,7 @@ public class RentalService implements IRentalService {
 	
 	@Override
 	public Rental getById(Long id) {
-		Rental rentalFound = daoRental.getById(id);
+		Rental rentalFound = daoRental.findOne(id);
 		/*try {
 			calcuatePayment.setCustomer(rentalFound.getCustomer());
 			Set<Payment> payments = calcuatePayment.calculateByFilmsToRent(rentalFound.getRentalFilms());
@@ -116,8 +115,7 @@ public class RentalService implements IRentalService {
 		}*/
 		
 		addPossiblePayments(rentalFound);
-		
-		
+				
 		return rentalFound;
 	}
 
@@ -149,7 +147,8 @@ public class RentalService implements IRentalService {
 	
 	@Override
 	public Rental addPaymentsToRental(Rental rentalRequest) {
-		Rental rentalFound = daoRental.getById(rentalRequest.getId());
+		Rental rentalFound = daoRental.findOne(rentalRequest.getId());
+		 
 		
 		if(!rentalFound.getStatus().equals("Q")) {
 			throw new IllegalArgumentException("The rental has a differnt status to Queue");
@@ -164,29 +163,31 @@ public class RentalService implements IRentalService {
 		// Calculate inventory and available 
 		rentalFound.getRentalFilms().forEach(rf -> {
 			Film film = calculateInventory.getFilmToUpdateAgaistInventory(rf.getFilm(), rf.getAmount());
-			daoFilm.update(film);
+			daoFilm.save(film);
 		});
 		
 		
 		// Update custumer's bonus
 		Customer customer = rentalFound.getCustomer();
-		customer.setBonus(calcuatePayment.getCustomerWithBonus(rentalFound.getRentalFilms()));
-		daoCustomer.update(customer);
+		customer.setBonus(calcuatePayment.getCustomerWithBonus(rentalFound.getRentalFilms()));				
+		daoCustomer.save(customer);
 		
 		// Update rental status 
 		rentalFound.setStatus("A");
-		daoRental.update(rentalFound);
+		daoRental.save(rentalFound);
 		
 		// Save payments
-		daoPayment.saveAll(rentalFound.getPayments());
+		//daoPayment.saveAll(rentalFound.getPayments());		
+		daoPayment.save(rentalFound.getPayments());
+		
 		
 		return rentalFound;
 	}
 	
 	@Override
 	public Rental returnRental(Rental rentalRequest) {
-		Rental rentalFound = daoRental.getById(rentalRequest.getId());
-		
+		 Rental rentalFound = daoRental.findOne(rentalRequest.getId());
+		   
 		// Validate rental
 		if(!rentalFound.getStatus().equals("A")) {
 			throw new IllegalArgumentException("The rental has a differnt status to Active");
@@ -202,12 +203,12 @@ public class RentalService implements IRentalService {
 			film.setInventoryStore(film.getInventoryStore() + amountReturn);
 			film.setInventoryRent(film.getInventoryRent() - amountReturn);
 			
-			daoFilm.update(film);
+			daoFilm.save(film);
 		});
 		
 		// Update rental 
 		rentalFound.setStatus("D");
-		daoRental.update(rentalFound);
+		daoRental.save(rentalFound);
 		
 		
 		return rentalFound;
@@ -216,7 +217,7 @@ public class RentalService implements IRentalService {
 	
 	public Set<RentalFilmsSerialize> getDataRentalFilms(Long id){
 		Set<RentalFilmsSerialize> filmsSerializes = new HashSet<RentalFilmsSerialize>();
-		Rental rental = daoRentalFilm.findAllByRental(id); // rentalFilmService.findAllByRental(id);
+		Rental rental = daoRentalFilm.findRentalByRental(id).getRental(); // rentalFilmService.findAllByRental(id);
 		
 		rental.getRentalFilms().forEach(rf -> {
 			RentalFilmsSerialize rfSerialize = new RentalFilmsSerialize();
