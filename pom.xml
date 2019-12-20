@@ -10,7 +10,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springframework.version>4.3.25.RELEASE</springframework.version>
-		<hibernate.version>4.3.6.Final</hibernate.version>
+		<hibernate.version>5.4.4.Final</hibernate.version>
 		<jackson.library>2.10.0</jackson.library>
 		<h2.version>1.4.199</h2.version>
 
@@ -70,6 +70,13 @@
 			<version>${jackson.library}</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		    <version>${jackson.library}</version>
+		</dependency>
+		
+		
 		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -87,11 +94,7 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 		
-		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-java8</artifactId>
-		    <version>5.3.10.Final</version>
-		</dependency>
+		
 
 		<!--  Driver DataBase -->
 		<dependency>
@@ -106,6 +109,19 @@
 		    <artifactId>spring-data-jpa</artifactId>
 		    <version>1.11.22.RELEASE</version>
 		</dependency>
+		
+		<!-- Dozer -->
+		<dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <!-- solve issues with LocalDate java 8-->
+        <dependency>
+            <groupId>io.craftsman</groupId>
+            <artifactId>dozer-jdk8-support</artifactId>
+            <version>1.0.2</version>
+        </dependency>
 		
 		<!-- Testing -->
 

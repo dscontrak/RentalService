@@ -1,14 +1,18 @@
 package com.hcl.traning.rentail.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hcl.traning.rentail.dao.FilmRepository;
+import com.hcl.traning.rentail.mapper.FilmDto;
 import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.service.IFilmService;
 
@@ -18,13 +22,22 @@ public class FilmService implements IFilmService {
 	@Autowired
 	private FilmRepository dao;	
 	
+	@Autowired
+	@Qualifier("org.dozer.Mapper")
+	Mapper mapper;
+	
+	
 	@Override
-	public void add(Film film) {
+	public void add(FilmDto filmDto) {
+		
+		Film film = mapper.map(filmDto, Film.class);
+		
 		LocalDateTime timestamp = LocalDateTime.now();
 		film.setUpdated(timestamp);
-		film.setCreated(timestamp);
+		film.setCreated(timestamp);		
 		
 		dao.save(film);
+		filmDto.setId(film.getId());
 	}	
 	
 	@Override
@@ -40,31 +53,39 @@ public class FilmService implements IFilmService {
 	}
 	
 	@Override
-	public List<Film> listAll() {
-		return dao.findAll();
+	@Transactional(readOnly = true)
+	public List<FilmDto> listAll() {
+		
+		List<FilmDto> films = new ArrayList<FilmDto>();
+		dao.findAll().forEach(f -> {
+			films.add(mapper.map(f, FilmDto.class));
+		});
+		
+		return films;
 
 	}
 
 	@Override
-	public Film delete(Long id) {
+	public FilmDto delete(Long id) {
 		
 		Film film = dao.findOne(id);
+		
 		
 		if(film == null) {
 			throw new IllegalArgumentException("Not found the film in Data Nase");
 		}
+					
+		dao.delete(film);		
 		
-		dao.delete(film);				
-		
-		return film;
+		return mapper.map(film, FilmDto.class);
 	}
 
 	@Override
-	public Film getById(Long id) {
-		
-		Film film = dao.findOne(id);
-		
-		return film;
+	@Transactional(readOnly = true)
+	public FilmDto getById(Long id) {
+				
+		Film film = dao.findOne(id);					
+		return mapper.map(film, FilmDto.class);
 	}
 	
 }

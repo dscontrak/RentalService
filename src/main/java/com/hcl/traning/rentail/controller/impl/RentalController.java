@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hcl.traning.rentail.controller.IRentalController;
-import com.hcl.traning.rentail.model.Rental;
+import com.hcl.traning.rentail.mapper.RentalDto;
 import com.hcl.traning.rentail.model.RentalFilmsSerialize;
 import com.hcl.traning.rentail.service.IRentalService;
 import com.hcl.traning.rentail.service.impl.RentalFilmService;
@@ -25,17 +25,18 @@ public class RentalController implements IRentalController {
 	RentalFilmService rentalFilmService; 
 	
 	@Override	
-	public Rental postData(@RequestBody Rental rental) {		
+	public RentalDto postData(@RequestBody RentalDto rental) {		
 		return service.add(rental);		
 	}
 	
 	@Override	
-	public List<Rental> getData() {				
+	public List<RentalDto> getData() {				
 		return service.listAll();
 	}
 	
 	@Override	
-	public Rental getDataRentalByID(@PathVariable("id") Long id) {				
+	public RentalDto getDataRentalByID(@PathVariable("id") Long id) {	
+		
 		return service.getById(id);
 	}
 	
@@ -45,13 +46,15 @@ public class RentalController implements IRentalController {
 	}
 	
 	@Override	
-	public Rental postDataPayment(@RequestBody Rental rental) {				
+	public RentalDto postDataPayment(@RequestBody RentalDto rental) {				
 		return service.addPaymentsToRental(rental);
 	}
 	
 	@Override	
-	public Rental postDataReturn(@RequestBody Rental rental) {					
+	public RentalDto postDataReturn(@RequestBody RentalDto rental) {					
 		return service.returnRental(rental);
 	}
+
+	
 	
 }

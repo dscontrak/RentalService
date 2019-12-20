@@ -4,24 +4,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import com.hcl.traning.rentail.model.Rental;
+import com.hcl.traning.rentail.mapper.RentalDto;
 import com.hcl.traning.rentail.model.RentalFilmsSerialize;
 
 public interface IRentalService {
 
-	Rental add(Rental rental);
+	RentalDto add(RentalDto rental);
 
-	void addAll(Collection<Rental> rentals);
+	void addAll(Collection<RentalDto> rentals);
 
-	List<Rental> listAll();
+	List<RentalDto> listAll();
 
-	Rental getById(Long id);
+	RentalDto getById(Long id);
 
-	void addPossiblePayments(Rental rental);
+	void addPossiblePayments(RentalDto rental);
 
-	Rental addPaymentsToRental(Rental rentalRequest);
+	RentalDto addPaymentsToRental(RentalDto rentalRequest);
 
-	Rental returnRental(Rental rentalRequest);
+	RentalDto returnRental(RentalDto rentalRequest);
 	
 	Set<RentalFilmsSerialize> getDataRentalFilms(Long id);
 	

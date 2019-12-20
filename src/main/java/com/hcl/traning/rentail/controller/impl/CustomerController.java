@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hcl.traning.rentail.controller.ICustomerController;
-import com.hcl.traning.rentail.model.Customer;
+import com.hcl.traning.rentail.mapper.CustomerDto;
 import com.hcl.traning.rentail.service.ICustomerService;
 
 
@@ -19,24 +19,24 @@ public class CustomerController implements ICustomerController {
 	ICustomerService service;
 	
 	@Override	
-	public Customer postData(@RequestBody Customer customer) {
+	public CustomerDto postData(@RequestBody CustomerDto customer) {
 		
 		service.add(customer);		
 		return customer;		
 	}
 	
 	@Override	
-	public List<Customer> getData(){
+	public List<CustomerDto> getData(){
 		return service.listAll();
 	}
 	
 	@Override	
-	public Customer getById(@PathVariable("id") Long id){
+	public CustomerDto getById(@PathVariable("id") Long id){
 		return service.getById(id);
 	}
 	
 	@Override	
-	public Customer deleteById(@PathVariable("id") Long id){
+	public CustomerDto deleteById(@PathVariable("id") Long id){
 		return service.delete(id);
 	}
 	

@@ -4,14 +4,14 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.hcl.traning.rentail.model.Film;
-import com.hcl.traning.rentail.model.RentalFilms;
+import com.hcl.traning.rentail.mapper.FilmDto;
+import com.hcl.traning.rentail.mapper.RentalFilmsDto;
 
 @Component
 public class CalculateInventory {
 	
 	
-	public Film getFilmToUpdateAgaistInventory(Film film, int amountRent){
+	public FilmDto getFilmToUpdateAgaistInventory(FilmDto film, int amountRent){
 				
 		if(amountRent > film.getInventoryStore()) {
 			throw new IllegalArgumentException("There are not inventory to film: " + film.getTitle());
@@ -23,9 +23,9 @@ public class CalculateInventory {
 		return film;
 	}
 
-	public int getAmountToUpdateFilmReturn(RentalFilms requestRf, Set<RentalFilms> dbRf) {
+	public int getAmountToUpdateFilmReturn(RentalFilmsDto requestRf, Set<RentalFilmsDto> dbRf) {
 		Long idFilm =  requestRf.getFilm().getId();		
-		RentalFilms rentalFilmFound = dbRf.stream().filter(rf -> rf.getFilm().getId() == idFilm).findAny().orElse(null);
+		RentalFilmsDto rentalFilmFound = dbRf.stream().filter(rf -> rf.getFilm().getId() == idFilm).findAny().orElse(null);
 		
 		
 		if(rentalFilmFound == null) {

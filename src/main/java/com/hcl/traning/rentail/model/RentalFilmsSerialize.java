@@ -1,6 +1,6 @@
 package com.hcl.traning.rentail.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 
 /**
@@ -8,7 +8,7 @@ import java.sql.Date;
  * @author dcontreras
  *
  */
-public class RentalFilmsSerialize {
+public class RentalFilmsSerialize extends BaseEntity {
 	
 	
 	private Long id;
@@ -20,7 +20,7 @@ public class RentalFilmsSerialize {
 	// Additional field
 	private Integer amount;
 	
-	private Date returnWithoutDue;
+	private LocalDate returnWithoutDue;
 
 	public Long getId() {
 		return id;
@@ -48,11 +48,11 @@ public class RentalFilmsSerialize {
 		this.amount = amount;
 	}
 
-	public Date getReturnWithoutDue() {
+	public LocalDate getReturnWithoutDue() {
 		return returnWithoutDue;
 	}
 
-	public void setReturnWithoutDue(Date returnWithoutDue) {
+	public void setReturnWithoutDue(LocalDate returnWithoutDue) {
 		this.returnWithoutDue = returnWithoutDue;
 	}
 	

@@ -1,4 +1,4 @@
-package com.hcl.traning.rentail.controllerservice;
+package com.hcl.traning.rentail.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -17,16 +17,17 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 import com.hcl.traning.rentail.controller.impl.RentalController;
-import com.hcl.traning.rentail.model.Customer;
-import com.hcl.traning.rentail.model.Film;
-import com.hcl.traning.rentail.model.Rental;
-import com.hcl.traning.rentail.model.RentalFilms;
+import com.hcl.traning.rentail.mapper.CustomerDto;
+import com.hcl.traning.rentail.mapper.FilmDto;
+import com.hcl.traning.rentail.mapper.RentalDto;
+import com.hcl.traning.rentail.mapper.RentalFilmsDto;
+
 import com.hcl.traning.rentail.service.impl.RentalService;
 import com.hcl.traning.rentail.util.CalcuatePayment;
 import com.hcl.traning.rentail.util.CodeGenerator;
 
 
-public class MockRental {
+public class RentalControllerTest {
 
 	@InjectMocks
 	RentalController rentalCtrl;
@@ -50,23 +51,23 @@ public class MockRental {
 	
 	@Test
 	public void testSaveRental() {
-		Rental rental = new Rental();
+		RentalDto rental = new RentalDto();
 		rental.setId(ID);
 		
-		Customer customer = new Customer();
+		CustomerDto customer = new CustomerDto();
 		customer.setId(1l);
 		customer.setBonus(0);
 				
-		Film film = new Film();
+		FilmDto film = new FilmDto();
 		film.setId(1l);
 		film.setTitle("Title");
 		film.setType("N");
 		
-		Set<RentalFilms> rentalFilms = new HashSet<>();
+		Set<RentalFilmsDto> rentalFilms = new HashSet<>();
 		
-		RentalFilms rentalFilm = new RentalFilms();
+		RentalFilmsDto rentalFilm = new RentalFilmsDto();
 		rentalFilm.setFilm(film);
-		rentalFilm.setRental(rental);
+		///////rentalFilm.setRental(rental);
 		rentalFilm.setId(1l);
 		
 		rentalFilms.add(rentalFilm);		
@@ -84,23 +85,23 @@ public class MockRental {
 	
 	@Test
 	public void testGetRentalById() {
-		Rental rental = new Rental();
+		RentalDto rental = new RentalDto();
 		rental.setId(ID);
 		rental.setStatus("Q");
 		
-		Customer customer = new Customer();
+		CustomerDto customer = new CustomerDto();
 		customer.setBonus(0);
 				
-		Film film = new Film();
+		FilmDto film = new FilmDto();
 		film.setId(1l);
 		film.setTitle("Title");
 		film.setType("N");
 		
-		Set<RentalFilms> rentalFilms = new HashSet<>();
+		Set<RentalFilmsDto> rentalFilms = new HashSet<>();
 		
-		RentalFilms rentalFilm = new RentalFilms();
+		RentalFilmsDto rentalFilm = new RentalFilmsDto();
 		rentalFilm.setFilm(film);
-		rentalFilm.setRental(rental);
+		//////rentalFilm.setRental(rental);
 		rentalFilm.setId(1l);
 		
 		rentalFilms.add(rentalFilm);
@@ -110,7 +111,7 @@ public class MockRental {
 		
 		when(rentalService.getById(ID)).thenReturn(rental);
 		
-		Rental rentalFound = rentalCtrl.getDataRentalByID(ID);
+		RentalDto rentalFound = rentalCtrl.getDataRentalByID(ID);
 		assertEquals(rentalFound.getId(), ID);
 		assertNull(rentalFound.getPossiblePayments());
 		verify(rentalService, times(1)).getById(ID);

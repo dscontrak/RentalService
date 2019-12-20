@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "payments")
-public class Payment implements Cloneable {
+public class Payment extends BaseEntity implements Cloneable {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

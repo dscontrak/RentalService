@@ -1,43 +1,42 @@
 package com.hcl.traning.rentail.util;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashSet;
-
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.hcl.traning.rentail.model.Customer;
+import com.hcl.traning.rentail.mapper.CustomerDto;
+import com.hcl.traning.rentail.mapper.FilmDto;
+import com.hcl.traning.rentail.mapper.PaymentDto;
+import com.hcl.traning.rentail.mapper.RentalFilmsDto;
 import com.hcl.traning.rentail.model.Film;
-import com.hcl.traning.rentail.model.Payment;
 
-import com.hcl.traning.rentail.model.RentalFilms;
 
 @Component
 public class CalcuatePayment {
 
-	private Customer customer;
+	private CustomerDto customer;
 
-	public void setCustomer(Customer customer) {
+	public void setCustomer(CustomerDto customer) {
 		this.customer = customer;
 	}
 	
-	public Set<Payment> calculateChargeByLateReturn(Set<RentalFilms> rentalFilms){
+	public Set<PaymentDto> calculateChargeByLateReturn(Set<RentalFilmsDto> rentalFilms){
 		
-		Payment paymentCharges = new Payment();
+		PaymentDto paymentCharges = new PaymentDto();
 		LocalDate today = LocalDate.now();
 		Double amount = 0.0;
-		Set<Payment> payments = new HashSet<>();
-		for(RentalFilms rf: rentalFilms) {
+		Set<PaymentDto> payments = new HashSet<>();
+		for(RentalFilmsDto rf: rentalFilms) {
 			
 			if (rf.getFilm() == null) {
 				continue;
 			}
-			Film film = rf.getFilm();
-			Period period = Period.between(rf.getReturnWithoutDue().toLocalDate(), today);
+			FilmDto film = rf.getFilm();
+			Period period = Period.between(rf.getReturnWithoutDue(), today);
 			int daysLate = period.getDays();
 			if(daysLate > 0) {
 				if (film.getType().equals("N")) {
@@ -66,12 +65,12 @@ public class CalcuatePayment {
 		return payments;
 	}
 
-	public Set<Payment> calculateByFilmsToRent(Set<RentalFilms> rentalFilms) throws CloneNotSupportedException {
+	public Set<PaymentDto> calculateByFilmsToRent(Set<RentalFilmsDto> rentalFilms) throws CloneNotSupportedException {
 		Double amount = 0.0;
-		Set<Payment> payments = new HashSet<>();
+		Set<PaymentDto> payments = new HashSet<>();
 
-		Payment paymentMoney = new Payment();
-		Payment paymentBonus = null;
+		PaymentDto paymentMoney = new PaymentDto();
+		PaymentDto paymentBonus = null;
 		
 		if(customer == null) {
 			throw new IllegalArgumentException("The Customer is requerid");
@@ -81,12 +80,12 @@ public class CalcuatePayment {
 		// paymentMoney.setCustomer(customer);
 		paymentMoney.setReasonPayment("N");
 
-		for (RentalFilms rf : rentalFilms) {
+		for (RentalFilmsDto rf : rentalFilms) {
 
 			if (rf.getFilm() == null) {
 				continue;
 			}
-			Film film = rf.getFilm();
+			FilmDto film = rf.getFilm();
 
 			if (film.getType().equals("N")) {
 				amount += 40.0;
@@ -98,7 +97,7 @@ public class CalcuatePayment {
 		}
 
 		if (customer.getBonus() >= 25) {
-			paymentBonus = (Payment) paymentMoney.clone();
+			paymentBonus = (PaymentDto) paymentMoney.clone();
 			int numberByBonus = customer.getBonus() % 2;			
 
 			paymentBonus.setAmount(new BigDecimal(numberByBonus));
@@ -118,10 +117,9 @@ public class CalcuatePayment {
 
 	}
 
-	public Date calculateDayReturnWithoutDue(Film film) {
-		Date dateToReturn = null;
+	public LocalDate calculateDayReturnWithoutDue(Film film) {
+		//Date dateToReturn = null;
 		
-
 		// current date
 		LocalDate today = LocalDate.now();
 
@@ -138,12 +136,12 @@ public class CalcuatePayment {
 			datePromiseToRetun = today.plusDays(1);
 		}
 		
-		dateToReturn = Date.valueOf(datePromiseToRetun);
+		//dateToReturn = Date.valueOf(datePromiseToRetun);
 
-		return dateToReturn;
+		return datePromiseToRetun;
 	}
 	
-	public int getCustomerWithBonus(Set<RentalFilms> rentalFilms) {
+	public int getCustomerWithBonus(Set<RentalFilmsDto> rentalFilms) {
 		int amountBonus = 0;
 				
 		amountBonus += 2*(rentalFilms.stream().filter(rf -> rf.getFilm().getType().equalsIgnoreCase("N")).mapToInt(rf -> rf.getAmount()).sum());

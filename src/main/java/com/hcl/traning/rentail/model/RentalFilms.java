@@ -1,6 +1,6 @@
 package com.hcl.traning.rentail.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "rental_film")
 //@JsonInclude(value = Include.NON_NULL)
-public class RentalFilms {
+public class RentalFilms extends BaseEntity {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class RentalFilms {
 	// Additional field
 	private Integer amount;
 	
-	private Date returnWithoutDue;
+	private LocalDate returnWithoutDue;
 
 	public Long getId() {
 		return id;
@@ -73,11 +73,11 @@ public class RentalFilms {
 		this.amount = amount;
 	}
 
-	public Date getReturnWithoutDue() {
+	public LocalDate getReturnWithoutDue() {
 		return returnWithoutDue;
 	}
 
-	public void setReturnWithoutDue(Date returnWithoutDue) {
+	public void setReturnWithoutDue(LocalDate returnWithoutDue) {
 		this.returnWithoutDue = returnWithoutDue;
 	}
 	

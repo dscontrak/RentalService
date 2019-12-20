@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,12 +17,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hcl.traning.rentail.util.LocalDateTimeConverter;
 
 
 @Entity
 @Table(name = "rentals")
-public class Rental {
+public class Rental extends BaseEntity {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,8 +47,6 @@ public class Rental {
 	private Set <Payment> possiblePayments;
 	
 	private String status;
-	//private Date returnDate;
-	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime created;
 	
 	public Long getId() {

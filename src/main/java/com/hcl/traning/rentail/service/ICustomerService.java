@@ -3,18 +3,20 @@ package com.hcl.traning.rentail.service;
 import java.util.Collection;
 import java.util.List;
 
-import com.hcl.traning.rentail.model.Customer;
+import com.hcl.traning.rentail.mapper.CustomerDto;
+
+
 
 public interface ICustomerService {
 
-	void add(Customer c);
+	void add(CustomerDto c);
 
-	void addAll(Collection<Customer> customers);
+	void addAll(Collection<CustomerDto> CustomerDtos);
 
-	List<Customer> listAll();
+	List<CustomerDto> listAll();
 
-	Customer getById(Long id);
+	CustomerDto getById(Long id);
 	
-	Customer delete(Long id);
+	CustomerDto delete(Long id);
 
 }

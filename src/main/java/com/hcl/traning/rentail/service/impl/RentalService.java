@@ -1,23 +1,32 @@
 package com.hcl.traning.rentail.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hcl.traning.rentail.dao.CustomerRepository;
 import com.hcl.traning.rentail.dao.FilmRepository;
 import com.hcl.traning.rentail.dao.PaymentRepository;
 import com.hcl.traning.rentail.dao.RentalFilmRepository;
 import com.hcl.traning.rentail.dao.RentalRepository;
+import com.hcl.traning.rentail.mapper.CustomerDto;
+import com.hcl.traning.rentail.mapper.FilmDto;
+import com.hcl.traning.rentail.mapper.PaymentDto;
+import com.hcl.traning.rentail.mapper.RentalDto;
 import com.hcl.traning.rentail.model.Customer;
 import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.model.Payment;
 import com.hcl.traning.rentail.model.Rental;
+import com.hcl.traning.rentail.model.RentalFilms;
 import com.hcl.traning.rentail.model.RentalFilmsSerialize;
 import com.hcl.traning.rentail.service.IRentalService;
 import com.hcl.traning.rentail.util.CalcuatePayment;
@@ -51,46 +60,56 @@ public class RentalService implements IRentalService {
 	@Autowired
 	CalculateInventory calculateInventory;
 	
+	@Autowired
+	@Qualifier("org.dozer.Mapper")
+	Mapper mapper;
+	
 	
 	
 	@Override
-	public Rental add(Rental rental) {
+	@Transactional(readOnly = false)
+	public RentalDto add(RentalDto rental) {
 		LocalDateTime timestamp = LocalDateTime.now();	
 		rental.setCreated(timestamp);				
 		
 		Customer customer = daoCustomer.findOne(rental.getCustomer().getId()) ;
-		rental.setCustomer(customer);
+		rental.setCustomer(mapper.map(customer, CustomerDto.class));
 		rental.setCode(codeGenerator.generate());
 		
 		// Set initial status Queue
-		rental.setStatus("Q");		
-		daoRental.save(rental);
+		rental.setStatus("Q");
+		
+		Rental rentalDb = mapper.map(rental, Rental.class);		
+		daoRental.save(rentalDb);
+				
 		
 		// read all rental and film 
 		rental.getRentalFilms().forEach(currRentalFilm -> {
 			Film foundFilm = daoFilm.findOne(currRentalFilm.getFilm().getId());
 			
 			if(foundFilm != null) {
-				currRentalFilm.setFilm(foundFilm);
-				currRentalFilm.setRental(rental);
+				
+				currRentalFilm.setFilm(mapper.map(foundFilm, FilmDto.class));
+				currRentalFilm.setRental(mapper.map(rentalDb, RentalDto.class));
 				currRentalFilm.setReturnWithoutDue( calcuatePayment.calculateDayReturnWithoutDue(foundFilm) );
-				// Save rentalFilm register
-				daoRentalFilm.save(currRentalFilm);
+				// Save rentalFilm register				
+				daoRentalFilm.save( mapper.map(currRentalFilm, RentalFilms.class) );
 			}
 			
 		});
 		
 		addPossiblePayments(rental);
+		rental.setId(rentalDb.getId());
 		return rental;
 	}	
 	
 	@Override
-	public void addAll(Collection<Rental> rentals) {
+	public void addAll(Collection<RentalDto> rentals) {
 		LocalDateTime timestamp = LocalDateTime.now();
 		
-		rentals.forEach(c -> {			
-			c.setCreated(timestamp);
-			daoRental.save(c);
+		rentals.forEach(r -> {			
+			r.setCreated(timestamp);
+			daoRental.save(mapper.map(r, Rental.class));
 		});
 		
 		/*for (Rental c : customers) {
@@ -99,12 +118,19 @@ public class RentalService implements IRentalService {
 	}
 	
 	@Override
-	public List<Rental> listAll() {
-		return daoRental.findAll();
+	public List<RentalDto> listAll() {
+		
+		List<RentalDto> list = new ArrayList<RentalDto>();
+		
+		daoRental.findAll().forEach(r -> {
+			list.add(mapper.map(r, RentalDto.class));
+		});
+		
+		return list;
 	}
 	
 	@Override
-	public Rental getById(Long id) {
+	public RentalDto getById(Long id) {
 		Rental rentalFound = daoRental.findOne(id);
 		/*try {
 			calcuatePayment.setCustomer(rentalFound.getCustomer());
@@ -114,14 +140,16 @@ public class RentalService implements IRentalService {
 			e.printStackTrace();
 		}*/
 		
-		addPossiblePayments(rentalFound);
+		RentalDto rentalDto = mapper.map(rentalFound, RentalDto.class);
+		
+		addPossiblePayments(rentalDto);
 				
-		return rentalFound;
+		return rentalDto;
 	}
 
 	@Override
-	public void addPossiblePayments(Rental rental) {
-		Set<Payment> payments = null;
+	public void addPossiblePayments(RentalDto rental) {
+		Set<PaymentDto> payments = null;
 		
 		if(rental.getStatus().equals("D")) {
 			//throw new IllegalArgumentException("The rental has been done");
@@ -146,48 +174,54 @@ public class RentalService implements IRentalService {
 	}
 	
 	@Override
-	public Rental addPaymentsToRental(Rental rentalRequest) {
+	public RentalDto addPaymentsToRental(RentalDto rentalRequest) {
 		Rental rentalFound = daoRental.findOne(rentalRequest.getId());
+		RentalDto rentalDto = mapper.map(rentalFound, RentalDto.class);
 		 
 		
-		if(!rentalFound.getStatus().equals("Q")) {
+		if(!rentalDto.getStatus().equals("Q")) {
 			throw new IllegalArgumentException("The rental has a differnt status to Queue");
 		}
 		
-		rentalFound.setPayments(rentalRequest.getPayments());		
-		rentalFound.getPayments().forEach(p -> {
-			p.setCustomer(rentalFound.getCustomer());
-			p.setRental(rentalFound);
+		rentalDto.setPayments(rentalRequest.getPayments());		
+		rentalDto.getPayments().forEach(p -> {
+			p.setCustomer(rentalDto.getCustomer());
+			p.setRental(rentalDto);			
+			
+			
+			
 		});
 		
 		// Calculate inventory and available 
-		rentalFound.getRentalFilms().forEach(rf -> {
-			Film film = calculateInventory.getFilmToUpdateAgaistInventory(rf.getFilm(), rf.getAmount());
-			daoFilm.save(film);
+		rentalDto.getRentalFilms().forEach(rf -> {
+			FilmDto film = calculateInventory.getFilmToUpdateAgaistInventory(rf.getFilm(), rf.getAmount());
+			daoFilm.save(mapper.map(film, Film.class));
 		});
 		
 		
 		// Update custumer's bonus
-		Customer customer = rentalFound.getCustomer();
-		customer.setBonus(calcuatePayment.getCustomerWithBonus(rentalFound.getRentalFilms()));				
-		daoCustomer.save(customer);
+		CustomerDto customer = rentalDto.getCustomer();
+		customer.setBonus(calcuatePayment.getCustomerWithBonus(rentalDto.getRentalFilms()));				
+		daoCustomer.save(mapper.map(customer, Customer.class));
 		
 		// Update rental status 
-		rentalFound.setStatus("A");
-		daoRental.save(rentalFound);
+		rentalDto.setStatus("A");
+		daoRental.save(mapper.map(rentalDto, Rental.class));
 		
 		// Save payments
 		//daoPayment.saveAll(rentalFound.getPayments());		
-		daoPayment.save(rentalFound.getPayments());
+		rentalDto.getPayments().forEach(p -> {
+			daoPayment.save(mapper.map(p, Payment.class));
+		});
 		
 		
-		return rentalFound;
+		return mapper.map(rentalDto, RentalDto.class);
 	}
 	
 	@Override
-	public Rental returnRental(Rental rentalRequest) {
-		 Rental rentalFound = daoRental.findOne(rentalRequest.getId());
-		   
+	public RentalDto returnRental(RentalDto rentalRequest) {
+		Rental rentalDb = daoRental.findOne(rentalRequest.getId());
+		RentalDto rentalFound = mapper.map(rentalDb, RentalDto.class);   
 		// Validate rental
 		if(!rentalFound.getStatus().equals("A")) {
 			throw new IllegalArgumentException("The rental has a differnt status to Active");
@@ -198,20 +232,24 @@ public class RentalService implements IRentalService {
 		
 		// Update inventory
 		rentalFound.getRentalFilms().forEach(rf -> {
-			int amountReturn = calculateInventory.getAmountToUpdateFilmReturn(rf, rentalRequest.getRentalFilms());
-			Film film = rf.getFilm();
+			int amountReturn = calculateInventory.getAmountToUpdateFilmReturn(
+					rf,
+					rentalFound.getRentalFilms()
+					);
+			
+			FilmDto film = rf.getFilm();
 			film.setInventoryStore(film.getInventoryStore() + amountReturn);
 			film.setInventoryRent(film.getInventoryRent() - amountReturn);
 			
-			daoFilm.save(film);
+			daoFilm.save(mapper.map(film, Film.class));
 		});
 		
 		// Update rental 
 		rentalFound.setStatus("D");
-		daoRental.save(rentalFound);
+		daoRental.save(mapper.map(rentalFound, Rental.class));
 		
 		
-		return rentalFound;
+		return mapper.map(rentalFound, RentalDto.class) ;
 	}
 	
 	

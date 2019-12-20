@@ -14,13 +14,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.SQLDelete;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hcl.traning.rentail.util.LocalDateTimeConverter;
 
 @Entity
+@SQLDelete(sql ="UPDATE customers SET deleted = 1 WHERE id = ?")
 @Table(name = "customers", 
 uniqueConstraints = { @UniqueConstraint(columnNames ={ "name", "lastName" })})
-public class Customer {
+public class Customer extends BaseEntity{
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

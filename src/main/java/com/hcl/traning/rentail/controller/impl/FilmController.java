@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hcl.traning.rentail.controller.IFilmController;
-import com.hcl.traning.rentail.model.Film;
+import com.hcl.traning.rentail.mapper.FilmDto;
+
 import com.hcl.traning.rentail.service.IFilmService;
 
 
@@ -20,25 +21,25 @@ public class FilmController implements IFilmController {
 	IFilmService service;
 	
 	@Override	
-	public Film postData(@RequestBody Film film) {
-		
+	public FilmDto postData(@RequestBody FilmDto film) {		
 		service.add(film);		
 		return film;
 	}
-	
-	@Override	
-	public List<Film> getData() {		
 		
-		return service.listAll();
-	}
 	
 	@Override	
-	public Film getById(@PathVariable("id") Long id){
+	public FilmDto getById(@PathVariable("id") Long id){
 		return service.getById(id);
 	}
 	
 	@Override	
-	public Film deleteById(@PathVariable("id") Long id){
+	public FilmDto deleteById(@PathVariable("id") Long id){
 		return service.delete(id);
+	}
+
+	@Override	
+	public List<FilmDto> getData() {		
+		
+		return service.listAll();
 	}
 }

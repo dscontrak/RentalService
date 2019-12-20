@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,14 +14,17 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hcl.traning.rentail.util.LocalDateTimeConverter;
+
 
 @Entity
 @Table(name = "films")
-public class Film {
+@SQLDelete(sql ="UPDATE films SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
+public class Film  extends BaseEntity{
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,11 +36,10 @@ public class Film {
 	private Integer inventoryStore;
 	private Integer inventoryRent;
 		
-	@Convert(converter = LocalDateTimeConverter.class)
+	
 	private LocalDateTime created;
 	
 	
-	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime updated;
 	
 	@JsonManagedReference(value ="film-rental")

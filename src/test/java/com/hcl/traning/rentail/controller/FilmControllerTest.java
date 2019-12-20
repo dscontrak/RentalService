@@ -1,4 +1,4 @@
-package com.hcl.traning.rentail.servicedao;
+package com.hcl.traning.rentail.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
@@ -8,25 +8,24 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.hcl.traning.rentail.dao.FilmRepository;
-import com.hcl.traning.rentail.model.Film;
+import com.hcl.traning.rentail.controller.impl.FilmController;
+import com.hcl.traning.rentail.mapper.FilmDto;
 import com.hcl.traning.rentail.service.impl.FilmService;
 
 
-public class MockFilm {
+public class FilmControllerTest {
 
-	@InjectMocks
+	@Mock
 	FilmService filmService;
 		
-	@Mock
-	FilmRepository filmDao;
+	@InjectMocks
+	FilmController filmCtrl;
 		
 	
 	final Long ID = 60l;
@@ -40,52 +39,51 @@ public class MockFilm {
 	@Test
 	public void testGetFilmById() {
 		
-		Film film = new Film();
+		FilmDto film = new FilmDto();
 		film.setId(ID);
 		film.setTitle("Title");
 		
-					
-		when(filmDao.findOne(ID)).thenReturn(film);		
-		Film filmFound = filmService.getById(ID);
+		when(filmService.getById(ID)).thenReturn(film);
+		
+		FilmDto filmFound = filmService.getById(ID);
 		
 		assertEquals(filmFound.getId(), ID);
 		assertEquals(filmFound.getTitle(), "Title");
 		
-		verify(filmDao, times(1)).findOne(ID);
+		verify(filmService, times(1)).getById(ID);
 		
 	}
 	
 	@Test
 	public void testGetFilmAll() {
 		
-		Film film = new Film();
+		FilmDto film = new FilmDto();
 		film.setId(ID);
 		film.setTitle("Title");
 		
-		List<Film> films = new ArrayList<Film>();
+		List<FilmDto> films = new ArrayList<FilmDto>();
 		films.add(film);
 		
-		when(filmDao.findAll()).thenReturn(films);
+		when(filmService.listAll()).thenReturn(films);
 		
-		List<Film> filmsFound = filmService.listAll();
+		List<FilmDto> filmsFound = filmService.listAll();
 		
 		assertEquals(filmsFound.size(), 1);				
-		verify(filmDao, times(1)).findAll();
+		verify(filmService, times(1)).listAll();
 		
 	}
 	
 	@Test
 	public void testDeleteFilmById() {
 		
-		Film film = new Film();
+		FilmDto film = new FilmDto();
 		film.setId(ID);
 		film.setTitle("Title");
 		
-				
-		when(filmDao.findOne(ID)).thenReturn(film);
+		when(filmService.getById(ID)).thenReturn(film);
 		
 		filmService.delete(film.getId());					
-		verify(filmDao, times(1)).delete(film);
+		verify(filmService, times(1)).delete(film.getId());
 		
 	}
 	
@@ -93,13 +91,13 @@ public class MockFilm {
 	public void testSaveFilm() {
 		final Long ID = 1l;
 		
-		Film film = new Film();
+		FilmDto film = new FilmDto();
 		film.setId(ID);
 		film.setTitle("Title");
 		
 		filmService.add(film);
 		
-		verify(filmDao, times(1)).save(film);		
+		verify(filmService, times(1)).add(film);		
 	}
 		
 
