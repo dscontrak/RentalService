@@ -21,7 +21,7 @@ import com.hcl.traning.rentail.mapper.CustomerDto;
 import com.hcl.traning.rentail.mapper.FilmDto;
 import com.hcl.traning.rentail.mapper.RentalDto;
 import com.hcl.traning.rentail.mapper.RentalFilmsDto;
-
+import com.hcl.traning.rentail.mapper.TypeFilmDto;
 import com.hcl.traning.rentail.service.impl.RentalService;
 import com.hcl.traning.rentail.util.CalcuatePayment;
 import com.hcl.traning.rentail.util.CodeGenerator;
@@ -57,11 +57,15 @@ public class RentalControllerTest {
 		CustomerDto customer = new CustomerDto();
 		customer.setId(1l);
 		customer.setBonus(0);
-				
+		
+		TypeFilmDto typeFilmDto = new TypeFilmDto();
+		typeFilmDto.setDaysToReturn(5);
+		typeFilmDto.setPrice(30d);
+		
 		FilmDto film = new FilmDto();
 		film.setId(1l);
 		film.setTitle("Title");
-		film.setType("N");
+		film.setTypeFilm(typeFilmDto);
 		
 		Set<RentalFilmsDto> rentalFilms = new HashSet<>();
 		
@@ -91,11 +95,15 @@ public class RentalControllerTest {
 		
 		CustomerDto customer = new CustomerDto();
 		customer.setBonus(0);
-				
+		
+		TypeFilmDto typeFilmDto = new TypeFilmDto();
+		typeFilmDto.setDaysToReturn(5);
+		typeFilmDto.setPrice(30d);
+		
 		FilmDto film = new FilmDto();
 		film.setId(1l);
 		film.setTitle("Title");
-		film.setType("N");
+		film.setTypeFilm(typeFilmDto);
 		
 		Set<RentalFilmsDto> rentalFilms = new HashSet<>();
 		

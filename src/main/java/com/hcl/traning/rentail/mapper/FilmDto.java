@@ -7,12 +7,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.hcl.traning.rentail.model.TypeFilm;
 
 public class FilmDto {
 	private Long id;
 	
 	private String title;
-	private String type;	
+	//private String type;	
 	private Integer inventoryStore;
 	private Integer inventoryRent;
 	
@@ -23,6 +24,7 @@ public class FilmDto {
 	@JsonManagedReference(value ="film-rental")
 	private Set<RentalFilmsDto> rentalFilms;
 	
+	private TypeFilmDto typeFilm;
 		
 	public Long getId() {
 		return id;
@@ -37,12 +39,12 @@ public class FilmDto {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getType() {
+	/*public String getType() {
 		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
-	}
+	}*/
 	public Integer getInventoryStore() {
 		return inventoryStore;
 	}
@@ -69,7 +71,15 @@ public class FilmDto {
 	}
 	public void setCreated(LocalDateTime created) {
 		this.created = created;
-	}	
+	}
+	public TypeFilmDto getTypeFilm() {
+		return typeFilm;
+	}
+	public void setTypeFilm(TypeFilmDto typeFilm) {
+		this.typeFilm = typeFilm;
+	}
+	
+	
 	
 	
 	

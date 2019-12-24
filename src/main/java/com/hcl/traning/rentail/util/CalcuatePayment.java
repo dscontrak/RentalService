@@ -12,7 +12,9 @@ import com.hcl.traning.rentail.mapper.CustomerDto;
 import com.hcl.traning.rentail.mapper.FilmDto;
 import com.hcl.traning.rentail.mapper.PaymentDto;
 import com.hcl.traning.rentail.mapper.RentalFilmsDto;
+import com.hcl.traning.rentail.mapper.TypeFilmDto;
 import com.hcl.traning.rentail.model.Film;
+import com.hcl.traning.rentail.model.TypeFilm;
 
 
 @Component
@@ -36,15 +38,15 @@ public class CalcuatePayment {
 				continue;
 			}
 			FilmDto film = rf.getFilm();
+			TypeFilmDto typeFilmDto = film.getTypeFilm();
+			
 			Period period = Period.between(rf.getReturnWithoutDue(), today);
+			
 			int daysLate = period.getDays();
+			
 			if(daysLate > 0) {
-				if (film.getType().equals("N")) {
-					amount += 40.0 * daysLate;
-				} else if (film.getType().equals("R")) {
-					if(daysLate > 3) {
-						amount += 30.0 * daysLate;
-					}					
+				if (typeFilmDto != null && typeFilmDto.getDaysToReturn() > daysLate) {
+					amount += typeFilmDto.getPrice() * daysLate;							
 				} else {
 					if(daysLate > 5) {
 						amount += 30.0 * daysLate;
@@ -86,14 +88,15 @@ public class CalcuatePayment {
 				continue;
 			}
 			FilmDto film = rf.getFilm();
-
-			if (film.getType().equals("N")) {
+			TypeFilmDto typeFilmDto = film.getTypeFilm();
+			
+			if(typeFilmDto != null && typeFilmDto.getPrice() > 0) {
+				amount += typeFilmDto.getPrice();
+			}else {
 				amount += 40.0;
-			} else if (film.getType().equals("R")) {
-				amount += 30.0;
-			} else {
-				amount += 30.0;
 			}
+			
+			
 		}
 
 		if (customer.getBonus() >= 25) {
@@ -117,7 +120,7 @@ public class CalcuatePayment {
 
 	}
 
-	public LocalDate calculateDayReturnWithoutDue(Film film) {
+	public LocalDate calculateDayReturnWithoutDue(TypeFilm film) {
 		//Date dateToReturn = null;
 		
 		// current date
@@ -126,12 +129,8 @@ public class CalcuatePayment {
 		// adding one day to the localdate
 		LocalDate datePromiseToRetun;
 
-		if (film.getType().equalsIgnoreCase("N")) {
-			datePromiseToRetun = today.plusDays(1);
-		}else if (film.getType().equalsIgnoreCase("R")) {
-			datePromiseToRetun = today.plusDays(3);
-		}else if (film.getType().equalsIgnoreCase("O")) {
-			datePromiseToRetun = today.plusDays(5);
+		if (film != null && film.getDaysToReturn() > 0) {
+			datePromiseToRetun = today.plusDays(film.getDaysToReturn());
 		}else {
 			datePromiseToRetun = today.plusDays(1);
 		}
@@ -144,8 +143,8 @@ public class CalcuatePayment {
 	public int getCustomerWithBonus(Set<RentalFilmsDto> rentalFilms) {
 		int amountBonus = 0;
 				
-		amountBonus += 2*(rentalFilms.stream().filter(rf -> rf.getFilm().getType().equalsIgnoreCase("N")).mapToInt(rf -> rf.getAmount()).sum());
-		amountBonus += (rentalFilms.stream().filter(rf -> !rf.getFilm().getType().equalsIgnoreCase("N")).mapToInt(rf -> rf.getAmount()).sum());				
+		amountBonus += 2*(rentalFilms.stream().filter(rf -> rf.getFilm().getTypeFilm().getPrice() >= 40).mapToInt(rf -> rf.getAmount()).sum());
+		amountBonus += (rentalFilms.stream().filter(rf -> rf.getFilm().getTypeFilm().getPrice() < 40).mapToInt(rf -> rf.getAmount()).sum());				
 		
 		return amountBonus;
 	} 

@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,7 +34,7 @@ public class Film  extends BaseEntity{
 	
 	@Column(unique = true)
 	private String title;
-	private String type;	
+	//private String type;	
 	private Integer inventoryStore;
 	private Integer inventoryRent;
 		
@@ -47,6 +49,9 @@ public class Film  extends BaseEntity{
 	@OneToMany(mappedBy = "film",  fetch = FetchType.EAGER)
 	private Set<RentalFilms> rentalFilms;
 	
+	@ManyToOne
+	@JoinColumn(name ="type_id")
+	private TypeFilm typeFilm;
 	
 	public Long getId() {
 		return id;
@@ -60,12 +65,7 @@ public class Film  extends BaseEntity{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}	
+
 	
 	public Integer getInventoryStore() {
 		return inventoryStore;
@@ -100,6 +100,14 @@ public class Film  extends BaseEntity{
 	public void setUpdated(LocalDateTime updated) {
 		this.updated = updated;
 	}
+	public TypeFilm getTypeFilm() {
+		return typeFilm;
+	}
+	public void setTypeFilm(TypeFilm typeFilm) {
+		this.typeFilm = typeFilm;
+	}
+	
+	
 	
 	
 

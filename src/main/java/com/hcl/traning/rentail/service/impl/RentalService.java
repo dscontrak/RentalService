@@ -91,7 +91,7 @@ public class RentalService implements IRentalService {
 				
 				currRentalFilm.setFilm(mapper.map(foundFilm, FilmDto.class));
 				currRentalFilm.setRental(mapper.map(rentalDb, RentalDto.class));
-				currRentalFilm.setReturnWithoutDue( calcuatePayment.calculateDayReturnWithoutDue(foundFilm) );
+				currRentalFilm.setReturnWithoutDue( calcuatePayment.calculateDayReturnWithoutDue(foundFilm.getTypeFilm()) );
 				// Save rentalFilm register				
 				daoRentalFilm.save( mapper.map(currRentalFilm, RentalFilms.class) );
 			}
@@ -118,6 +118,7 @@ public class RentalService implements IRentalService {
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<RentalDto> listAll() {
 		
 		List<RentalDto> list = new ArrayList<RentalDto>();
@@ -130,6 +131,7 @@ public class RentalService implements IRentalService {
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public RentalDto getById(Long id) {
 		Rental rentalFound = daoRental.findOne(id);
 		/*try {
@@ -252,7 +254,7 @@ public class RentalService implements IRentalService {
 		return mapper.map(rentalFound, RentalDto.class) ;
 	}
 	
-	
+	@Transactional(readOnly = true)
 	public Set<RentalFilmsSerialize> getDataRentalFilms(Long id){
 		Set<RentalFilmsSerialize> filmsSerializes = new HashSet<RentalFilmsSerialize>();
 		Rental rental = daoRentalFilm.findRentalByRental(id).getRental(); // rentalFilmService.findAllByRental(id);
