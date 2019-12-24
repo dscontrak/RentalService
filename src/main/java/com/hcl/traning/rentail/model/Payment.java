@@ -32,6 +32,7 @@ public class Payment extends BaseEntity implements Cloneable {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="customer_id", nullable = false)
+	@JsonBackReference
 	private Customer customer;
 
 	public Long getId() {

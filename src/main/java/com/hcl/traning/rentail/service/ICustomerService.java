@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import com.hcl.traning.rentail.mapper.CustomerDto;
+import com.hcl.traning.rentail.mapper.PaymentDto;
+import com.hcl.traning.rentail.mapper.RentalDto;
 
 
 
@@ -18,5 +20,9 @@ public interface ICustomerService {
 	CustomerDto getById(Long id);
 	
 	CustomerDto delete(Long id);
+
+	List<PaymentDto> getPaymentsByCustomerId(Long id);
+
+	List<RentalDto> getRentalsByCustomerId(Long id);
 
 }

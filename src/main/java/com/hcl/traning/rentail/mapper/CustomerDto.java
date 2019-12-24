@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.hcl.traning.rentail.model.Payment;
 
 
 public class CustomerDto {
@@ -24,6 +25,10 @@ public class CustomerDto {
 	private LocalDateTime created;
 	@JsonBackReference
 	private Set<RentalDto> rentals;
+	
+	@JsonBackReference
+	private Set<Payment> payments;
+	
 	public Long getId() {
 		return id;
 	}
@@ -72,7 +77,14 @@ public class CustomerDto {
 	public void setRentals(Set<RentalDto> rentals) {
 		this.rentals = rentals;
 	}
+	public Set<Payment> getPayments() {
+		return payments;
+	}
+	public void setPayments(Set<Payment> payments) {
+		this.payments = payments;
+	}
 		
+	
 	
 	
 }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hcl.traning.rentail.dao.CustomerRepository;
 import com.hcl.traning.rentail.mapper.CustomerDto;
+import com.hcl.traning.rentail.mapper.PaymentDto;
+import com.hcl.traning.rentail.mapper.RentalDto;
 import com.hcl.traning.rentail.model.Customer;
+import com.hcl.traning.rentail.model.Rental;
 import com.hcl.traning.rentail.service.ICustomerService;
 
 @Service
@@ -22,6 +26,7 @@ public class CustomerService implements ICustomerService {
 	
 	@Autowired
 	private CustomerRepository dao;	
+		
 	
 	@Autowired
 	@Qualifier("org.dozer.Mapper")
@@ -85,5 +90,41 @@ public class CustomerService implements ICustomerService {
 				
 		return mapper.map(customer, CustomerDto.class);
 		
+	}
+
+	
+
+	@Override
+	public List<RentalDto> getRentalsByCustomerId(Long id) {
+		Customer customer = dao.findOne(id);
+		List<RentalDto> rentalsDto = new ArrayList<RentalDto>();
+		if(customer == null) {
+			throw new IllegalArgumentException("Not found the Customer in Data Base");
+		}
+		Set<Rental> rentals = customer.getRentals();
+		
+		rentals.forEach(r -> {
+			rentalsDto.add(mapper.map(r, RentalDto.class));
+		});
+		
+		return rentalsDto;
+	}
+
+	@Override
+	public List<PaymentDto> getPaymentsByCustomerId(Long id) {
+		Customer customer = dao.findOne(id);		
+		List<PaymentDto> paymentDtos = new ArrayList<PaymentDto>();
+		
+		if(customer == null) {
+			throw new IllegalArgumentException("Not found the Customer in Data Base");
+		}
+		
+		
+		customer.getPayments().forEach(p -> {
+			paymentDtos.add(mapper.map(p, PaymentDto.class));
+		});
+		
+		
+		return paymentDtos;
 	}
 }

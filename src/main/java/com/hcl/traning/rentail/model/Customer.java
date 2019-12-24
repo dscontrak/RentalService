@@ -46,6 +46,10 @@ public class Customer extends BaseEntity{
 	@JsonBackReference
 	private Set<Rental> rentals;
 	
+	@OneToMany(mappedBy = "customer",  fetch = FetchType.EAGER)	
+	@JsonBackReference
+	private Set<Payment> payments;
+	
 	public Long getId() {
 		return id;
 	}
@@ -104,6 +108,14 @@ public class Customer extends BaseEntity{
 	public void setRentals(Set<Rental> rentals) {
 		this.rentals = rentals;
 	}
+	public Set<Payment> getPayments() {
+		return payments;
+	}
+	public void setPayments(Set<Payment> payments) {
+		this.payments = payments;
+	}
+	
+	
 	
 	
 	

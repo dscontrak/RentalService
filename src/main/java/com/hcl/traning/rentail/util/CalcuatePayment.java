@@ -13,7 +13,6 @@ import com.hcl.traning.rentail.mapper.FilmDto;
 import com.hcl.traning.rentail.mapper.PaymentDto;
 import com.hcl.traning.rentail.mapper.RentalFilmsDto;
 import com.hcl.traning.rentail.mapper.TypeFilmDto;
-import com.hcl.traning.rentail.model.Film;
 import com.hcl.traning.rentail.model.TypeFilm;
 
 

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hcl.traning.rentail.controller.ICustomerController;
 import com.hcl.traning.rentail.mapper.CustomerDto;
+import com.hcl.traning.rentail.mapper.PaymentDto;
+import com.hcl.traning.rentail.mapper.RentalDto;
 import com.hcl.traning.rentail.service.ICustomerService;
 
 
@@ -38,6 +40,16 @@ public class CustomerController implements ICustomerController {
 	@Override	
 	public CustomerDto deleteById(@PathVariable("id") Long id){
 		return service.delete(id);
+	}
+
+	@Override
+	public List<RentalDto> getRentalsByCustomerId(@PathVariable Long id) {		
+		return service.getRentalsByCustomerId(id);
+	}
+
+	@Override
+	public List<PaymentDto> getPaymentsByCustomerId(@PathVariable Long id) {		
+		return service.getPaymentsByCustomerId(id);
 	}
 	
 }
