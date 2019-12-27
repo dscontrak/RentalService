@@ -69,8 +69,7 @@ public class RentalService implements IRentalService {
 	@Override
 	@Transactional(readOnly = false)
 	public RentalDto add(RentalDto rental) {
-		LocalDateTime timestamp = LocalDateTime.now();	
-		rental.setCreated(timestamp);				
+					
 		
 		Customer customer = daoCustomer.findOne(rental.getCustomer().getId()) ;
 		rental.setCustomer(mapper.map(customer, CustomerDto.class));
@@ -79,7 +78,10 @@ public class RentalService implements IRentalService {
 		// Set initial status Queue
 		rental.setStatus("Q");
 		
-		Rental rentalDb = mapper.map(rental, Rental.class);		
+		Rental rentalDb = mapper.map(rental, Rental.class);
+		LocalDateTime timestamp = LocalDateTime.now();	
+		rentalDb.setCreated(timestamp);	
+		
 		daoRental.save(rentalDb);
 				
 		

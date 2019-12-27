@@ -28,16 +28,16 @@ public class TypeFilmController implements ITypeFilmController {
 		return service.getAll();
 	}
 
-	@Override
+	/*@Override
 	public TypeFilmDto getById(Long id) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public TypeFilmDto deleteById(Long id) {
-		// TODO Auto-generated method stub
+		
 		return null;
-	}
+	}*/
 
 }

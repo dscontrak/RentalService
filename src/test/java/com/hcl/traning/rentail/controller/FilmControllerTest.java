@@ -37,7 +37,7 @@ public class FilmControllerTest {
     }
 	
 	@Test
-	public void testGetFilmById() {
+	public void testGetById() {
 		
 		FilmDto film = new FilmDto();
 		film.setId(ID);
@@ -55,7 +55,7 @@ public class FilmControllerTest {
 	}
 	
 	@Test
-	public void testGetFilmAll() {
+	public void testGetData() {
 		
 		FilmDto film = new FilmDto();
 		film.setId(ID);
@@ -74,7 +74,7 @@ public class FilmControllerTest {
 	}
 	
 	@Test
-	public void testDeleteFilmById() {
+	public void testDeleteById() {
 		
 		FilmDto film = new FilmDto();
 		film.setId(ID);
@@ -88,7 +88,7 @@ public class FilmControllerTest {
 	}
 	
 	@Test
-	public void testSaveFilm() {
+	public void testPostData() {
 		final Long ID = 1l;
 		
 		FilmDto film = new FilmDto();

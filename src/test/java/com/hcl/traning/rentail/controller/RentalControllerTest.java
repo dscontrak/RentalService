@@ -6,7 +6,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -19,9 +21,11 @@ import org.mockito.Spy;
 import com.hcl.traning.rentail.controller.impl.RentalController;
 import com.hcl.traning.rentail.mapper.CustomerDto;
 import com.hcl.traning.rentail.mapper.FilmDto;
+import com.hcl.traning.rentail.mapper.PaymentDto;
 import com.hcl.traning.rentail.mapper.RentalDto;
 import com.hcl.traning.rentail.mapper.RentalFilmsDto;
 import com.hcl.traning.rentail.mapper.TypeFilmDto;
+import com.hcl.traning.rentail.model.RentalFilmsSerialize;
 import com.hcl.traning.rentail.service.impl.RentalService;
 import com.hcl.traning.rentail.util.CalcuatePayment;
 import com.hcl.traning.rentail.util.CodeGenerator;
@@ -50,9 +54,9 @@ public class RentalControllerTest {
     }
 	
 	@Test
-	public void testSaveRental() {
+	public void testPostData() {
 		RentalDto rental = new RentalDto();
-		rental.setId(ID);
+		//rental.setId(ID);
 		
 		CustomerDto customer = new CustomerDto();
 		customer.setId(1l);
@@ -71,7 +75,7 @@ public class RentalControllerTest {
 		
 		RentalFilmsDto rentalFilm = new RentalFilmsDto();
 		rentalFilm.setFilm(film);
-		///////rentalFilm.setRental(rental);
+		rentalFilm.setRental(rental);
 		rentalFilm.setId(1l);
 		
 		rentalFilms.add(rentalFilm);		
@@ -79,16 +83,15 @@ public class RentalControllerTest {
 		rental.setCustomer(customer);
 		rental.setRentalFilms(rentalFilms);
 		
-		rentalCtrl.postData(rental);
-		
+		RentalDto rentalSaved = rentalCtrl.postData(rental);
+				
+		assertNull(rentalSaved);										
 		verify(rentalService, times(1)).add(rental);
-		
-		
-		
+				
 	}
 	
 	@Test
-	public void testGetRentalById() {
+	public void testGetDataRentalById() {
 		RentalDto rental = new RentalDto();
 		rental.setId(ID);
 		rental.setStatus("Q");
@@ -109,7 +112,7 @@ public class RentalControllerTest {
 		
 		RentalFilmsDto rentalFilm = new RentalFilmsDto();
 		rentalFilm.setFilm(film);
-		//////rentalFilm.setRental(rental);
+		rentalFilm.setRental(rental);
 		rentalFilm.setId(1l);
 		
 		rentalFilms.add(rentalFilm);
@@ -124,6 +127,66 @@ public class RentalControllerTest {
 		assertNull(rentalFound.getPossiblePayments());
 		verify(rentalService, times(1)).getById(ID);
 		
+		
+	}
+	
+	@Test
+	public void testGetData() {
+		RentalDto rental = new RentalDto();
+		rental.setId(ID);
+		rental.setStatus("Q");
+		
+		List<RentalDto> rentals = new ArrayList<RentalDto>();
+		rentals.add(rental);		
+		
+		when(rentalService.listAll()).thenReturn(rentals);
+		
+		List<RentalDto> rentalsFound = rentalCtrl.getData();
+		
+		verify(rentalService, times(1)).listAll();
+		assertEquals(rentalsFound.size(), 1);
+		
+	}
+	
+	@Test
+	public void testGetDataRentalFilms() {		
+		Set<RentalFilmsSerialize> rentalFilms = new HashSet<RentalFilmsSerialize>();
+		RentalFilmsSerialize rentalFilm = new RentalFilmsSerialize();
+		
+		rentalFilms.add(rentalFilm);
+		
+		when(rentalService.getDataRentalFilms(ID)).thenReturn(rentalFilms);		
+		Set<RentalFilmsSerialize> rentalFilmsFound = rentalCtrl.getDataRentalFilms(ID);
+		
+		verify(rentalService, times(1)).getDataRentalFilms(ID);
+		assertEquals(rentalFilmsFound.size(), 1);
+	}
+	
+	@Test
+	public void testPostDataPayment() {		
+		RentalDto rental = new RentalDto();
+		
+		Set<PaymentDto> payments = new HashSet<PaymentDto>();
+		payments.add(new PaymentDto());
+		
+		rental.setPayments(payments);
+		
+		when(rentalService.addPaymentsToRental(rental)).thenReturn(rental);		
+		rentalCtrl.postDataPayment(rental);
+		
+		verify(rentalService, times(1)).addPaymentsToRental(rental);
+		
+		
+	}
+	
+	@Test
+	public void testPostReturn() {		
+		RentalDto rental = new RentalDto();
+						
+		when(rentalService.returnRental(rental)).thenReturn(rental);		
+		rentalCtrl.postDataReturn(rental);
+		
+		verify(rentalService, times(1)).returnRental(rental);		
 		
 	}
 	

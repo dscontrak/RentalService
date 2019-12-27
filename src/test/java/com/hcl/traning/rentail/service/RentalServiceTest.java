@@ -5,9 +5,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.BasicConfigurator;
+import org.dozer.DozerBeanMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -57,22 +61,33 @@ public class RentalServiceTest {
 	@Spy 
 	CodeGenerator codeGenerator;
 	
+	@Spy
+	DozerBeanMapper mapper;
+	
 	final Long ID = 5l;
 	
 	@Before 
 	public void init()
     {
         MockitoAnnotations.initMocks(this);
+        List<String> mappingFiles = new ArrayList<String>();
+		mappingFiles.add("dozerJdk8Converters.xml");
+		
+		mapper = new DozerBeanMapper();	    
+		mapper.setMappingFiles(mappingFiles);
+		BasicConfigurator.configure();
     }
 	
-	@Test
-	public void testSaveRental() {
+	//@Test // Problem with dozer library
+	public void testAdd() {
 		RentalDto rental = new RentalDto();
 		rental.setId(ID);
 		
 		CustomerDto customer = new CustomerDto();
 		customer.setId(1l);
 		customer.setBonus(0);
+		
+		
 		
 		TypeFilmDto typeFilmDto = new TypeFilmDto();
 		typeFilmDto.setDaysToReturn(5);
@@ -87,7 +102,7 @@ public class RentalServiceTest {
 		
 		RentalFilmsDto rentalFilm = new RentalFilmsDto();
 		rentalFilm.setFilm(film);
-		///rentalFilm.setRental(rental);
+		rentalFilm.setRental(rental);
 		rentalFilm.setId(1l);
 		
 		rentalFilms.add(rentalFilm);		
@@ -95,8 +110,8 @@ public class RentalServiceTest {
 		rental.setCustomer(customer);
 		rental.setRentalFilms(rentalFilms);
 		
-		when(daoCustomer.findOne(1l)).thenReturn(new Customer());
-		when(daoFilm.findOne(1l)).thenReturn(new Film());
+		when(daoCustomer.findOne(1l)).thenReturn(mapper.map(customer, Customer.class));
+		when(daoFilm.findOne(1l)).thenReturn(mapper.map(film, Film.class));
 		
 		rentalService.add(rental);
 		
@@ -108,7 +123,7 @@ public class RentalServiceTest {
 	}
 	
 	@Test
-	public void testGetRentalById() {
+	public void testGetById() {
 		Rental rental = new Rental();
 		rental.setId(ID);
 		rental.setStatus("Q");

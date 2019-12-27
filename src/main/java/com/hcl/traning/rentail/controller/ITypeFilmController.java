@@ -15,9 +15,9 @@ public interface ITypeFilmController {
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	List<TypeFilmDto> getData();
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	TypeFilmDto getById(Long id);
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	TypeFilmDto deleteById(Long id);
+	TypeFilmDto deleteById(Long id);*/
 }

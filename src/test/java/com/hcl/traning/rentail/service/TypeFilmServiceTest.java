@@ -17,19 +17,19 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-import com.hcl.traning.rentail.dao.FilmRepository;
-import com.hcl.traning.rentail.mapper.FilmDto;
-import com.hcl.traning.rentail.model.Film;
-import com.hcl.traning.rentail.service.impl.FilmService;
+import com.hcl.traning.rentail.dao.TypeFilmRepository;
+import com.hcl.traning.rentail.mapper.TypeFilmDto;
+import com.hcl.traning.rentail.model.TypeFilm;
+import com.hcl.traning.rentail.service.impl.TypeFilmService;
 
 
-public class FilmServiceTest {
+public class TypeFilmServiceTest {
 
 	@InjectMocks
-	FilmService filmService;
+	TypeFilmService filmService;
 		
 	@Mock
-	FilmRepository filmDao;
+	TypeFilmRepository filmDao;
 	
 	@Spy
 	DozerBeanMapper mapper;
@@ -47,67 +47,40 @@ public class FilmServiceTest {
 		mapper = new DozerBeanMapper();	    
 		mapper.setMappingFiles(mappingFiles);
     }
+		
 	
 	@Test
-	public void testGetById() {
+	public void testGetAll() {
 		
-		Film film = new Film();
+		TypeFilm film = new TypeFilm();
 		film.setId(ID);
-		film.setTitle("Title");
+		film.setDaysToReturn(5);
+		film.setPrice(40d);
+		film.setName("Normal Rental");
 		
-					
-		when(filmDao.findOne(ID)).thenReturn(film);		
-		FilmDto filmFound = filmService.getById(ID);
-		
-		assertEquals(filmFound.getId(), ID);
-		assertEquals(filmFound.getTitle(), "Title");
-		
-		verify(filmDao, times(1)).findOne(ID);
-		
-	}
-	
-	@Test
-	public void testListAll() {
-		
-		Film film = new Film();
-		film.setId(ID);
-		film.setTitle("Title");
-		
-		List<Film> films = new ArrayList<Film>();
+		List<TypeFilm> films = new ArrayList<TypeFilm>();
 		films.add(film);
 		
 		when(filmDao.findAll()).thenReturn(films);
 		
-		List<FilmDto> filmsFound = filmService.listAll();
+		List<TypeFilmDto> filmsFound = filmService.getAll();
 		
 		assertEquals(filmsFound.size(), 1);				
 		verify(filmDao, times(1)).findAll();
 		
 	}
 	
-	@Test
-	public void testDelete() {
-		
-		Film film = new Film();
-		film.setId(ID);
-		film.setTitle("Title");
-		
-				
-		when(filmDao.findOne(ID)).thenReturn(film);
-		
-		filmService.delete(film.getId());					
-		verify(filmDao, times(1)).delete(film);
-		
-	}
 	
 	@Test
 	public void testAdd() {
 		final Long ID = 1l;
-		ArgumentCaptor<Film> argumentAny = ArgumentCaptor.forClass(Film.class);
+		ArgumentCaptor<TypeFilm> argumentAny = ArgumentCaptor.forClass(TypeFilm.class);
 		
-		FilmDto film = new FilmDto();
+		TypeFilmDto film = new TypeFilmDto();
 		film.setId(ID);
-		film.setTitle("Title");
+		film.setDaysToReturn(5);
+		film.setPrice(40d);
+		film.setName("Normal Rental");
 						
 		filmService.add(film);
 		

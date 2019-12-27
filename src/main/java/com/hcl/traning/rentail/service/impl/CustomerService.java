@@ -3,7 +3,6 @@ package com.hcl.traning.rentail.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +44,7 @@ public class CustomerService implements ICustomerService {
 		cDto.setId(c.getId());
 	}	
 	
-	@Override
+	/*@Override
 	public void addAll(Collection<CustomerDto> customers) {
 		LocalDateTime timestamp = LocalDateTime.now();
 		
@@ -57,7 +56,7 @@ public class CustomerService implements ICustomerService {
 			dao.save(c);
 		});
 				
-	}
+	}*/
 	
 	@Override
 	@Transactional(readOnly = true)

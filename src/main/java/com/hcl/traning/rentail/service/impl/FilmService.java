@@ -2,7 +2,6 @@ package com.hcl.traning.rentail.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.dozer.Mapper;
@@ -40,7 +39,7 @@ public class FilmService implements IFilmService {
 		filmDto.setId(film.getId());
 	}	
 	
-	@Override
+	/*@Override
 	public void addAll(Collection<Film> films) {
 		LocalDateTime timestamp = LocalDateTime.now();
 		
@@ -50,7 +49,7 @@ public class FilmService implements IFilmService {
 			dao.save(f);
 		});
 				
-	}
+	}*/
 	
 	@Override
 	@Transactional(readOnly = true)
