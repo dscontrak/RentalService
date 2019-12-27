@@ -105,9 +105,9 @@
 
 		<!-- Spring Data JPA -->
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>1.11.22.RELEASE</version>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-jpa</artifactId>
+		    <version>1.11.23.RELEASE</version>
 		</dependency>
 
 		<!-- Dozer -->
