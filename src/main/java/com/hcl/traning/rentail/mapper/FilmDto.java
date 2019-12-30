@@ -4,15 +4,21 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class FilmDto {
 	private Long id;
 	
 	private String title;
-	//private String type;	
+	
 	private Integer inventoryStore;
 	private Integer inventoryRent;
 	
@@ -20,7 +26,8 @@ public class FilmDto {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDateTime created;
 	
-	@JsonManagedReference(value ="film-rental")
+	//@JsonManagedReference(value ="film-rental")
+	@JsonIgnore
 	private Set<RentalFilmsDto> rentalFilms;
 	
 	private TypeFilmDto typeFilm;
@@ -38,12 +45,7 @@ public class FilmDto {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	/*public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}*/
+	
 	public Integer getInventoryStore() {
 		return inventoryStore;
 	}
@@ -59,6 +61,7 @@ public class FilmDto {
 	public void setRentalFilms(Set<RentalFilmsDto> rentalFilms) {
 		this.rentalFilms = rentalFilms;
 	}
+	
 	public Integer getInventoryRent() {
 		return inventoryRent;
 	}
@@ -71,18 +74,15 @@ public class FilmDto {
 	public void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
+	
+	
 	public TypeFilmDto getTypeFilm() {
 		return typeFilm;
 	}
 	public void setTypeFilm(TypeFilmDto typeFilm) {
 		this.typeFilm = typeFilm;
 	}
-	
-	
-	
-	
-	
-	
+		
 	
 	
 }

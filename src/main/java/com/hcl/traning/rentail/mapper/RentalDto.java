@@ -4,10 +4,15 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class RentalDto {
 private Long id;
 	
@@ -17,7 +22,7 @@ private Long id;
 	@JsonManagedReference(value ="rental-film")
 	private Set<RentalFilmsDto> rentalFilms;	
 	
-	@JsonManagedReference
+	//@JsonManagedReference
 	private Set<PaymentDto> payments;		
 		
 	private Set <PaymentDto> possiblePayments;	

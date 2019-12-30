@@ -3,19 +3,29 @@ package com.hcl.traning.rentail.mapper;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class PaymentDto implements Cloneable{
-	
+	private Long id;
 	
 	private BigDecimal amount;
 	private String typePayment;
 	private String reasonPayment;
 	
-	@JsonBackReference
+	//@JsonBackReference
 	private RentalDto rental;		
-	private CustomerDto customer;
+	private CustomerDto customer;		
 	
-	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public BigDecimal getAmount() {
 		return amount;
 	}

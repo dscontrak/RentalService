@@ -17,7 +17,7 @@ public class TypeFilmController implements ITypeFilmController {
 	ITypeFilmService service;
 	
 	@Override
-	public TypeFilmDto postData(@RequestBody TypeFilmDto film) {
+	public  TypeFilmDto postData(@RequestBody TypeFilmDto film) {
 		service.add(film);
 		return film;
 	}

@@ -25,7 +25,11 @@ public class TypeFilmService implements ITypeFilmService {
 	
 	@Override
 	public void add(TypeFilmDto film) {		
-		dao.save(mapper.map(film, TypeFilm.class));
+		TypeFilm typeFilm;
+		typeFilm = mapper.map(film, TypeFilm.class);
+		dao.save(typeFilm);
+		
+		film.setId(typeFilm.getId());
 	}
 
 	@Override

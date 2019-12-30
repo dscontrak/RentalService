@@ -3,13 +3,15 @@ package com.hcl.traning.rentail.mapper;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.hcl.traning.rentail.model.Payment;
 
-
+@JsonIdentityInfo(
+		  generator = ObjectIdGenerators.PropertyGenerator.class, 
+		  property = "id")
 public class CustomerDto {
 	
 	private Long id;
@@ -23,11 +25,12 @@ public class CustomerDto {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDateTime created;
-	@JsonBackReference
+	
+	//@JsonBackReference("rentals")
 	private Set<RentalDto> rentals;
 	
-	@JsonBackReference
-	private Set<Payment> payments;
+	//@JsonBackReference("payments")
+	private Set<PaymentDto> payments;
 	
 	public Long getId() {
 		return id;
@@ -77,12 +80,14 @@ public class CustomerDto {
 	public void setRentals(Set<RentalDto> rentals) {
 		this.rentals = rentals;
 	}
-	public Set<Payment> getPayments() {
+	public Set<PaymentDto> getPayments() {
 		return payments;
 	}
-	public void setPayments(Set<Payment> payments) {
+	public void setPayments(Set<PaymentDto> payments) {
 		this.payments = payments;
 	}
+	
+	
 		
 	
 	
