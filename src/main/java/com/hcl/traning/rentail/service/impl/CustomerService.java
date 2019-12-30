@@ -72,8 +72,12 @@ public class CustomerService implements ICustomerService {
 	
 	@Override
 	public CustomerDto getById(Long id) {
-						
-		return mapper.map( dao.findOne(id) , CustomerDto.class );
+		Customer customer = dao.findOne(id);
+		if(customer == null) {
+			throw new IllegalArgumentException("Not found the Customer in Data Base");
+		}
+		
+		return mapper.map( customer, CustomerDto.class );
 	}
 
 	@Override

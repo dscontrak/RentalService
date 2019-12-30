@@ -32,11 +32,38 @@ public class CustomerClientTest {
     }
 	
 	@Test
-	public void getDataTest() throws Exception {		
+	public void testGetData() throws Exception {		
 		
 		mvc.perform(MockMvcRequestBuilders.get("/api/customers")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print()).andExpect(status().isOk());
+			
+	}
+	
+	@Test
+	public void testGetByID() throws Exception {		
+						
+		mvc.perform(MockMvcRequestBuilders.get("/api/customers/9999")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print()).andExpect(status().is(404));
+			
+	}
+	
+	@Test
+	public void testDeleteByID() throws Exception {		
+						
+		mvc.perform(MockMvcRequestBuilders.delete("/api/customers/9999")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print()).andExpect(status().is(404));
+			
+	}
+	
+	@Test
+	public void testPostData() throws Exception {		
+						
+		mvc.perform(MockMvcRequestBuilders.post("/api/customers/")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print());
 			
 	}
 	

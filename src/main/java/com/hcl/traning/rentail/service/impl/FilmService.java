@@ -83,7 +83,12 @@ public class FilmService implements IFilmService {
 	@Transactional(readOnly = true)
 	public FilmDto getById(Long id) {
 				
-		Film film = dao.findOne(id);					
+		Film film = dao.findOne(id);
+		
+		if(film == null) {
+			throw new IllegalArgumentException("Not found the film in Data Nase");
+		}
+		
 		return mapper.map(film, FilmDto.class);
 	}
 	

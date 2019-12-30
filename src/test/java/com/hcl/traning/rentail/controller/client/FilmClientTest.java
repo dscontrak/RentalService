@@ -39,6 +39,33 @@ public class FilmClientTest {
 				.andDo(print()).andExpect(status().isOk());
 			
 	}
+	
+	@Test
+	public void testGetByID() throws Exception {		
+						
+		mvc.perform(MockMvcRequestBuilders.get("/api/films/9999")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print()).andExpect(status().is(404));
+			
+	}
+	
+	@Test
+	public void testDeleteByID() throws Exception {		
+						
+		mvc.perform(MockMvcRequestBuilders.delete("/api/films/9999")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print()).andExpect(status().is(404));
+			
+	}
+	
+	@Test
+	public void testPostData() throws Exception {		
+						
+		mvc.perform(MockMvcRequestBuilders.post("/api/films/")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print());
+			
+	}
 		
 	
 }
