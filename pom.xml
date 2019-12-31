@@ -107,6 +107,13 @@
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.ibm.db2.jcc</groupId>
+		    <artifactId>db2jcc</artifactId>
+		    <version>db2jcc4</version>
+		</dependency>
+		
 
 		<!-- Spring Data JPA -->
 		<dependency>

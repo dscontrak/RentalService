@@ -32,11 +32,56 @@ public class RentalClientTest {
     }	
 	
 	@Test
-	public void getDataTest() throws Exception {		
+	public void testGetData() throws Exception {		
 		
-		mvc.perform(MockMvcRequestBuilders.get("/api/retals")
+		mvc.perform(MockMvcRequestBuilders.get("/api/rentals")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print()).andExpect(status().isOk());
+			
+	}
+	
+	@Test
+	public void testGetDataRentalById() throws Exception {		
+		
+		mvc.perform(MockMvcRequestBuilders.get("/api/rentals/9999")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print()).andExpect(status().is(404));
+			
+	}
+	
+	@Test
+	public void testGetDataRentalFilms() throws Exception {		
+		
+		mvc.perform(MockMvcRequestBuilders.get("/api/rentals/9999/rentalfilms")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print()).andExpect(status().is(404));
+			
+	}
+	
+	@Test
+	public void testPostDataPayment() throws Exception {		
+		
+		mvc.perform(MockMvcRequestBuilders.post("/api/rentals/9999/payments")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print());
+			
+	}
+	
+	@Test
+	public void testPostDataReturn() throws Exception {		
+		
+		mvc.perform(MockMvcRequestBuilders.post("/api/rentals/9999/return")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print());
+			
+	}	
+	
+	@Test
+	public void testPostData() throws Exception {		
+		
+		mvc.perform(MockMvcRequestBuilders.post("/api/rentals/")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print());
 			
 	}
 	

@@ -12,7 +12,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 @JsonIdentityInfo(
 		  generator = ObjectIdGenerators.PropertyGenerator.class, 
-		  property = "id")
+		  property = "id",
+		  scope = RentalDto.class)
 public class RentalDto {
 private Long id;
 	

@@ -19,7 +19,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 
 @Entity
@@ -41,7 +44,8 @@ public class Film  extends BaseEntity{
 	
 	private LocalDateTime created;
 	
-	
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDateTime updated;
 	
 	@JsonManagedReference(value ="film-rental")

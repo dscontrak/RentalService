@@ -12,7 +12,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 @JsonIdentityInfo(
 		  generator = ObjectIdGenerators.PropertyGenerator.class, 
-		  property = "id")
+		  property = "id",
+		  scope = FilmDto.class)
 public class FilmDto {
 	private Long id;
 	
@@ -24,8 +25,7 @@ public class FilmDto {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDateTime created;
-	
-	//@JsonManagedReference(value ="film-rental")
+		
 	@JsonIgnore
 	private Set<RentalFilmsDto> rentalFilms;
 	

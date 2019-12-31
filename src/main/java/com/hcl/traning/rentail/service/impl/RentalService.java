@@ -180,8 +180,14 @@ public class RentalService implements IRentalService {
 	@Override
 	public RentalDto addPaymentsToRental(RentalDto rentalRequest) {
 		Rental rentalFound = daoRental.findOne(rentalRequest.getId());
+		
+		if(rentalFound == null) {
+			throw new IllegalArgumentException("The rental not found in data base");
+		}
+		
 		RentalDto rentalDto = mapper.map(rentalFound, RentalDto.class);
-		 
+		
+		
 		
 		if(!rentalDto.getStatus().equals("Q")) {
 			throw new IllegalArgumentException("The rental has a differnt status to Queue");
@@ -225,8 +231,16 @@ public class RentalService implements IRentalService {
 	@Override
 	public RentalDto returnRental(RentalDto rentalRequest) {
 		Rental rentalDb = daoRental.findOne(rentalRequest.getId());
+		
+		if(rentalDb == null) {
+			throw new IllegalArgumentException("The rental not found in data base");
+		}
+		
 		RentalDto rentalFound = mapper.map(rentalDb, RentalDto.class);   
 		// Validate rental
+		
+		
+		
 		if(!rentalFound.getStatus().equals("A")) {
 			throw new IllegalArgumentException("The rental has a differnt status to Active");
 		}
@@ -259,7 +273,13 @@ public class RentalService implements IRentalService {
 	@Transactional(readOnly = true)
 	public Set<RentalFilmsSerialize> getDataRentalFilms(Long id){
 		Set<RentalFilmsSerialize> filmsSerializes = new HashSet<RentalFilmsSerialize>();
-		Rental rental = daoRentalFilm.findRentalByRental(id).getRental(); // rentalFilmService.findAllByRental(id);
+		//Rental rental = daoRentalFilm.findRentalByRental(id).getRental(); // rentalFilmService.findAllByRental(id);
+		Rental rental = daoRental.findOne(id);
+		
+		if(rental == null) {
+			throw new IllegalArgumentException("The rental not found in data base");
+		}
+		
 		
 		rental.getRentalFilms().forEach(rf -> {
 			RentalFilmsSerialize rfSerialize = new RentalFilmsSerialize();

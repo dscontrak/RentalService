@@ -2,6 +2,10 @@ package com.hcl.traning.rentail.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
 
 /**
  * Use only to serialize a object to prevent Infinite Recursion with Jackson JSON 
@@ -20,6 +24,8 @@ public class RentalFilmsSerialize extends BaseEntity {
 	// Additional field
 	private Integer amount;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate returnWithoutDue;
 
 	public Long getId() {
